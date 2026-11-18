@@ -1,0 +1,1545 @@
+{
+ "legend": {
+  "W": "wall",
+  "T": "tile",
+  "O": "wood",
+  "S": "sand",
+  "A": "stair",
+  "M": "metal",
+  "C": "carpet",
+  "P": "pad",
+  "D": "path",
+  "R": "rock"
+ },
+ "doors": {
+  "door1": {
+   "to": "home/entry",
+   "when": [
+    "read:permit",
+    "read:diary",
+    "read:history"
+   ],
+   "locked": "locked_door1"
+  },
+  "door2": {
+   "to": "plaza/entry",
+   "when": [
+    "event:family_goodbye"
+   ],
+   "locked": "locked_door2"
+  },
+  "door3": {
+   "to": "lab/entry",
+   "when": [
+    "event:friends_goodbye"
+   ],
+   "locked": "locked_door3"
+  },
+  "door4": {
+   "to": "dock/entry",
+   "when": [
+    "event:kit_given"
+   ],
+   "locked": "locked_door4"
+  }
+ },
+ "start": {
+  "map": "myroom",
+  "spawn": "start",
+  "card": "stage0"
+ },
+ "maps": [
+  {
+   "id": "myroom",
+   "size": [
+    12,
+    9
+   ],
+   "wall": "colony",
+   "dark": 0,
+   "tiles": [
+    "WWWWWWWWWWWW",
+    "WWWWWWWWWWWW",
+    "WWWWWWWWWWWW",
+    "WCCCCCCCCCCW",
+    "WCCCCCCCCCCW",
+    "WCCCCCCCCCCW",
+    "WCCCCCCCCCCW",
+    "WCCCCCCCCCCW",
+    "WWWWWWWWWWWW"
+   ],
+   "spawns": {
+    "entry": [
+     96,
+     122,
+     "up"
+    ],
+    "start": [
+     40,
+     90,
+     "right"
+    ]
+   },
+   "objects": [
+    {
+     "sprite": "mat",
+     "x": 80,
+     "y": 116,
+     "flat": true
+    },
+    {
+     "id": "bed",
+     "sprite": "bed",
+     "x": 16,
+     "y": 40,
+     "base": 64,
+     "solid": [
+      [
+       1,
+       3,
+       3,
+       1
+      ]
+     ],
+     "hit": [
+      16,
+      40,
+      48,
+      24
+     ],
+     "use": "dialogue:bed"
+    },
+    {
+     "id": "history",
+     "sprite": "bookshelf",
+     "x": 80,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       5,
+       3,
+       2,
+       1
+      ]
+     ],
+     "hit": [
+      80,
+      48,
+      32,
+      16
+     ],
+     "use": "read:history"
+    },
+    {
+     "id": "door1",
+     "door": "door1",
+     "x": 159,
+     "y": 18,
+     "base": 47,
+     "hit": [
+      160,
+      40,
+      16,
+      10
+     ],
+     "use": "door:door1"
+    },
+    {
+     "sprite": "window",
+     "x": 16,
+     "y": 18,
+     "base": 47
+    },
+    {
+     "id": "diploma",
+     "sprite": "diploma",
+     "x": 65,
+     "y": 20,
+     "base": 47,
+     "hit": [
+      64,
+      40,
+      16,
+      10
+     ],
+     "use": "read:diploma"
+    },
+    {
+     "sprite": "studydesk",
+     "x": 112,
+     "y": 70,
+     "base": 96,
+     "solid": [
+      [
+       7,
+       5,
+       3,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "permit",
+     "sprite": "permitDoc",
+     "x": 114,
+     "y": 71,
+     "base": 97,
+     "hit": [
+      112,
+      72,
+      16,
+      26
+     ],
+     "use": "read:permit"
+    },
+    {
+     "id": "textbook",
+     "sprite": "textbook",
+     "x": 130,
+     "y": 70,
+     "base": 97,
+     "hit": [
+      128,
+      72,
+      16,
+      26
+     ],
+     "use": "read:textbook"
+    },
+    {
+     "id": "diary",
+     "sprite": "diaryBook",
+     "x": 147,
+     "y": 72,
+     "base": 97,
+     "hit": [
+      144,
+      72,
+      16,
+      26
+     ],
+     "use": "read:diary"
+    }
+   ],
+   "player_look": "me",
+   "chapter": 0
+  },
+  {
+   "id": "home",
+   "size": [
+    14,
+    10
+   ],
+   "wall": "colony",
+   "dark": 0,
+   "tiles": [
+    "WWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW",
+    "WCCCCCCCCCCCCW",
+    "WCCCCCCCCCCCCW",
+    "WCCCCCCCCCCCCW",
+    "WCCCCCCCCCCCCW",
+    "WCCCCCCCCCCCCW",
+    "WCCCCCCCCCCCCW",
+    "WWWWWWWWWWWWWW"
+   ],
+   "spawns": {
+    "entry": [
+     112,
+     138,
+     "up"
+    ]
+   },
+   "objects": [
+    {
+     "sprite": "mat",
+     "x": 96,
+     "y": 132,
+     "flat": true
+    },
+    {
+     "sprite": "window",
+     "x": 48,
+     "y": 18,
+     "base": 47
+    },
+    {
+     "id": "planter",
+     "sprite": "planter",
+     "x": 16,
+     "y": 48,
+     "base": 64,
+     "solid": [
+      [
+       1,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      16,
+      48,
+      16,
+      16
+     ],
+     "use": "dialogue:planter"
+    },
+    {
+     "sprite": "ctable",
+     "x": 100,
+     "y": 76,
+     "base": 96,
+     "solid": [
+      [
+       6,
+       5,
+       2,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "grandma",
+     "npc": "grandma",
+     "dir": "right",
+     "x": 72,
+     "y": 92,
+     "base": 92,
+     "solid": [
+      [
+       4,
+       5,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      64,
+      72,
+      16,
+      24
+     ],
+     "use": "dialogue:grandma",
+     "base_dir": "right"
+    },
+    {
+     "id": "sibling",
+     "npc": "sibling",
+     "dir": "left",
+     "x": 152,
+     "y": 108,
+     "base": 108,
+     "solid": [
+      [
+       9,
+       6,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      144,
+      88,
+      16,
+      24
+     ],
+     "use": "dialogue:sibling",
+     "base_dir": "left"
+    },
+    {
+     "id": "door2",
+     "door": "door2",
+     "x": 175,
+     "y": 18,
+     "base": 47,
+     "hit": [
+      176,
+      40,
+      16,
+      10
+     ],
+     "use": "door:door2"
+    }
+   ],
+   "player_look": "me",
+   "chapter": 0
+  },
+  {
+   "id": "plaza",
+   "size": [
+    18,
+    10
+   ],
+   "wall": "colony",
+   "dark": 0,
+   "tiles": [
+    "WWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWW",
+    "WMMMMMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMMMMMW",
+    "WWWWWWWWWWWWWWWWWW"
+   ],
+   "spawns": {
+    "entry": [
+     144,
+     138,
+     "up"
+    ]
+   },
+   "objects": [
+    {
+     "sprite": "mat",
+     "x": 128,
+     "y": 132,
+     "flat": true
+    },
+    {
+     "sprite": "window",
+     "x": 64,
+     "y": 18,
+     "base": 47
+    },
+    {
+     "sprite": "window",
+     "x": 128,
+     "y": 18,
+     "base": 47
+    },
+    {
+     "id": "friendA",
+     "npc": "friendA",
+     "dir": "right",
+     "x": 88,
+     "y": 108,
+     "base": 108,
+     "solid": [
+      [
+       5,
+       6,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      80,
+      88,
+      16,
+      24
+     ],
+     "use": "dialogue:friendA",
+     "base_dir": "right"
+    },
+    {
+     "id": "friendB",
+     "npc": "friendB",
+     "dir": "left",
+     "x": 120,
+     "y": 108,
+     "base": 108,
+     "solid": [
+      [
+       7,
+       6,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      112,
+      88,
+      16,
+      24
+     ],
+     "use": "dialogue:friendB",
+     "base_dir": "left"
+    },
+    {
+     "id": "memorial",
+     "sprite": "memorial",
+     "x": 192,
+     "y": 44,
+     "base": 80,
+     "solid": [
+      [
+       12,
+       4,
+       2,
+       1
+      ]
+     ],
+     "hit": [
+      192,
+      48,
+      32,
+      32
+     ],
+     "use": "dialogue:memorial"
+    },
+    {
+     "id": "planter",
+     "sprite": "planter",
+     "x": 32,
+     "y": 64,
+     "base": 80,
+     "solid": [
+      [
+       2,
+       4,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      32,
+      64,
+      16,
+      16
+     ],
+     "use": "dialogue:planter"
+    },
+    {
+     "id": "planter_2",
+     "sprite": "planter",
+     "x": 32,
+     "y": 112,
+     "base": 128,
+     "solid": [
+      [
+       2,
+       7,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      32,
+      112,
+      16,
+      16
+     ],
+     "use": "dialogue:planter"
+    },
+    {
+     "id": "planter_3",
+     "sprite": "planter",
+     "x": 240,
+     "y": 112,
+     "base": 128,
+     "solid": [
+      [
+       15,
+       7,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      240,
+      112,
+      16,
+      16
+     ],
+     "use": "dialogue:planter"
+    },
+    {
+     "id": "door3",
+     "door": "door3",
+     "x": 239,
+     "y": 18,
+     "base": 47,
+     "hit": [
+      240,
+      40,
+      16,
+      10
+     ],
+     "use": "door:door3"
+    }
+   ],
+   "player_look": "me",
+   "chapter": 0
+  },
+  {
+   "id": "lab",
+   "size": [
+    14,
+    10
+   ],
+   "wall": "colony",
+   "dark": 0,
+   "tiles": [
+    "WWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WWWWWWWWWWWWWW"
+   ],
+   "spawns": {
+    "entry": [
+     112,
+     138,
+     "up"
+    ]
+   },
+   "objects": [
+    {
+     "sprite": "mat",
+     "x": 96,
+     "y": 132,
+     "flat": true
+    },
+    {
+     "id": "terminalP",
+     "sprite": "terminal",
+     "x": 32,
+     "y": 40,
+     "base": 64,
+     "solid": [
+      [
+       2,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      32,
+      40,
+      16,
+      24
+     ],
+     "use": "dialogue:terminalP"
+    },
+    {
+     "sprite": "desk",
+     "x": 88,
+     "y": 54,
+     "base": 80,
+     "solid": [
+      [
+       5,
+       4,
+       3,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "prof",
+     "npc": "prof",
+     "dir": "down",
+     "x": 104,
+     "y": 60,
+     "base": 60,
+     "solid": [
+      [
+       6,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      80,
+      32,
+      48,
+      48
+     ],
+     "use": "dialogue:prof",
+     "base_dir": "down"
+    },
+    {
+     "sprite": "cabinet",
+     "x": 176,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       11,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cabinet",
+     "x": 192,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       12,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "door4",
+     "door": "door4",
+     "x": 143,
+     "y": 18,
+     "base": 47,
+     "hit": [
+      144,
+      40,
+      16,
+      10
+     ],
+     "use": "door:door4"
+    }
+   ],
+   "player_look": "me",
+   "chapter": 0
+  },
+  {
+   "id": "dock",
+   "size": [
+    12,
+    8
+   ],
+   "wall": "colony",
+   "dark": 0,
+   "tiles": [
+    "WWWWWWWWWWWW",
+    "WWWWWWWWWWWW",
+    "WWWWWWWWWWWW",
+    "WPPPPPPPPPPW",
+    "WPPPPPPPPPPW",
+    "WPPPPPPPPPPW",
+    "WPPPPPPPPPPW",
+    "WWWWWWWWWWWW"
+   ],
+   "spawns": {
+    "entry": [
+     96,
+     106,
+     "up"
+    ]
+   },
+   "objects": [
+    {
+     "sprite": "mat",
+     "x": 80,
+     "y": 100,
+     "flat": true
+    },
+    {
+     "id": "board",
+     "sprite": "board",
+     "x": 32,
+     "y": 24,
+     "base": 47,
+     "hit": [
+      32,
+      40,
+      32,
+      10
+     ],
+     "use": "dialogue:board"
+    },
+    {
+     "sprite": "window",
+     "x": 128,
+     "y": 18,
+     "base": 47
+    },
+    {
+     "id": "gate",
+     "sprite": "gate",
+     "x": 80,
+     "y": 18,
+     "base": 47,
+     "hit": [
+      80,
+      40,
+      32,
+      10
+     ],
+     "use": "dialogue:gate"
+    },
+    {
+     "id": "relaydesk",
+     "sprite": "relaydesk",
+     "x": 144,
+     "y": 40,
+     "base": 64,
+     "solid": [
+      [
+       9,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      144,
+      40,
+      16,
+      24
+     ],
+     "use": "dialogue:relaydesk"
+    }
+   ],
+   "player_look": "me",
+   "chapter": 0
+  },
+  {
+   "id": "base",
+   "size": [
+    26,
+    16
+   ],
+   "wall": "rock",
+   "dark": 0,
+   "tint": "rgba(200,120,60,.10)",
+   "wind": true,
+   "tiles": [
+    "RRRRRRRRRRRRRRRRRRRRRRRRRR",
+    "RRRSRRSRRSSSSSRRSSRSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSPPPPPPSSSSSSSSSSSSSSSSR",
+    "RSSPPPPPPSSSSSSSSSSSSSSSSR",
+    "RSSPPPPPPSSSSSSSSSSSSSSSSR",
+    "RSSPPPPPPSSSSSSSSSSSSSSSSR",
+    "RSSPPPPPPSSSSSSSSSDDSSSSSR",
+    "RSSPPPPPPSSSSSSSSSDDSSSSSR",
+    "RSSSSSSDDDDDDDDDDDDDSSSSSR",
+    "RSSSSSSDDDDDDDDDDDDDSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSRSSRRSSRSRRRSRRSR",
+    "RRRRRRRRRRRRRRRRRRRRRRRRRR"
+   ],
+   "spawns": {
+    "arrive": [
+     104,
+     138,
+     "down"
+    ],
+    "fromLibrary": [
+     304,
+     124,
+     "down"
+    ]
+   },
+   "objects": [
+    {
+     "id": "rocket",
+     "sprite": "rocket",
+     "x": 62,
+     "y": 14,
+     "base": 110,
+     "solid": [
+      [
+       5,
+       4,
+       2,
+       3
+      ]
+     ],
+     "hit": [
+      80,
+      64,
+      32,
+      48
+     ],
+     "use": "dialogue:rocket"
+    },
+    {
+     "id": "comm",
+     "sprite": "comm",
+     "x": 144,
+     "y": 68,
+     "base": 96,
+     "solid": [
+      [
+       9,
+       5,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      144,
+      68,
+      16,
+      28
+     ],
+     "use": "dialogue:comm"
+    },
+    {
+     "id": "crate",
+     "sprite": "crate",
+     "x": 176,
+     "y": 66,
+     "base": 80,
+     "solid": [
+      [
+       11,
+       4,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      176,
+      64,
+      16,
+      16
+     ],
+     "use": "dialogue:crate"
+    },
+    {
+     "id": "crate_2",
+     "sprite": "crate",
+     "x": 192,
+     "y": 66,
+     "base": 80,
+     "solid": [
+      [
+       12,
+       4,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      192,
+      64,
+      16,
+      16
+     ],
+     "use": "dialogue:crate"
+    },
+    {
+     "sprite": "solar",
+     "x": 32,
+     "y": 174,
+     "base": 192,
+     "solid": [
+      [
+       2,
+       11,
+       2,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "bunker",
+     "sprite": "bunker",
+     "x": 272,
+     "y": 64,
+     "base": 112,
+     "solid": [
+      [
+       17,
+       4,
+       4,
+       3
+      ]
+     ],
+     "hit": [
+      288,
+      96,
+      32,
+      16
+     ],
+     "use": "dialogue:bunker"
+    }
+   ],
+   "player_look": "suit",
+   "chapter": 1,
+   "on_enter": "dialogue:arrive_base"
+  },
+  {
+   "id": "library",
+   "size": [
+    32,
+    22
+   ],
+   "wall": "conc",
+   "dark": 0.58,
+   "tiles": [
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWAAWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWAAWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTW",
+    "WSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTW",
+    "WSSSTTTTTTTTTTTTTTTTTTTTTTTTTTTW",
+    "WTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTW",
+    "WTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTW",
+    "WTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTW",
+    "WWWWWWWWWWWWWWTTTWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWTTTWWWWWWWWWWWWWWW",
+    "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOSSSOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOSSSOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOSSSOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOOSOOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW",
+    "WOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+   ],
+   "solid_cells": [
+    [
+     2,
+     1
+    ],
+    [
+     3,
+     1
+    ]
+   ],
+   "boxes": [
+    [
+     195,
+     249,
+     10,
+     5
+    ]
+   ],
+   "lights": [
+    [
+     48,
+     32,
+     80,
+     "rgba(255,232,190,.42)"
+    ],
+    [
+     144,
+     42,
+     34,
+     "rgba(255,90,70,.28)"
+    ],
+    [
+     352,
+     42,
+     34,
+     "rgba(255,90,70,.28)"
+    ],
+    [
+     272,
+     260,
+     64,
+     "rgba(255,226,170,.45)"
+    ]
+   ],
+   "dust": [
+    272,
+    208
+   ],
+   "spawns": {
+    "fromBase": [
+     56,
+     70,
+     "down"
+    ]
+   },
+   "objects": [
+    {
+     "id": "stairs",
+     "hit": [
+      32,
+      24,
+      32,
+      16
+     ],
+     "use": "dialogue:stairs"
+    },
+    {
+     "sprite": "cabinet",
+     "x": 80,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       5,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "cabinet",
+     "sprite": "cabinet",
+     "x": 112,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       7,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      112,
+      48,
+      16,
+      16
+     ],
+     "use": "dialogue:cabinet"
+    },
+    {
+     "sprite": "cabinet",
+     "x": 144,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       9,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cabinet",
+     "x": 176,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       11,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cabinet",
+     "x": 304,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       19,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cabinet",
+     "x": 336,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       21,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cabinet",
+     "x": 368,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       23,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cabinet",
+     "x": 400,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       25,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cabinet",
+     "x": 432,
+     "y": 34,
+     "base": 64,
+     "solid": [
+      [
+       27,
+       3,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "vault",
+     "sprite": "vault",
+     "x": 216,
+     "y": 14,
+     "base": 48,
+     "hit": [
+      216,
+      40,
+      64,
+      10
+     ],
+     "use": "dialogue:vault"
+    },
+    {
+     "id": "libterm",
+     "sprite": "terminal",
+     "x": 464,
+     "y": 56,
+     "base": 80,
+     "solid": [
+      [
+       29,
+       4,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      464,
+      56,
+      16,
+      24
+     ],
+     "use": "dialogue:libterm"
+    },
+    {
+     "sprite": "rubble",
+     "x": 192,
+     "y": 130,
+     "base": 144,
+     "solid": [
+      [
+       12,
+       8,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "rubble",
+     "x": 286,
+     "y": 178,
+     "base": 192,
+     "solid": [
+      [
+       18,
+       11,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "cloth",
+     "x": 372,
+     "y": 148,
+     "base": 175
+    },
+    {
+     "sprite": "rug",
+     "x": 320,
+     "y": 248,
+     "flat": true
+    },
+    {
+     "sprite": "sandpile",
+     "x": 234,
+     "y": 246,
+     "flat": true
+    },
+    {
+     "sprite": "shelf",
+     "x": 64,
+     "y": 290,
+     "base": 320,
+     "solid": [
+      [
+       4,
+       19,
+       2,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "shelf",
+     "x": 144,
+     "y": 290,
+     "base": 320,
+     "solid": [
+      [
+       9,
+       19,
+       2,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "shelf",
+     "x": 224,
+     "y": 290,
+     "base": 320,
+     "solid": [
+      [
+       14,
+       19,
+       2,
+       1
+      ]
+     ]
+    },
+    {
+     "sprite": "shelf",
+     "x": 400,
+     "y": 290,
+     "base": 320,
+     "solid": [
+      [
+       25,
+       19,
+       2,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "rec1",
+     "sprite": "record",
+     "x": 72,
+     "y": 288,
+     "base": 321,
+     "hit": [
+      64,
+      288,
+      32,
+      20
+     ],
+     "use": "inspect:rec1"
+    },
+    {
+     "id": "rec3",
+     "sprite": "record",
+     "x": 152,
+     "y": 288,
+     "base": 321,
+     "hit": [
+      144,
+      288,
+      32,
+      20
+     ],
+     "use": "inspect:rec3"
+    },
+    {
+     "id": "rec6",
+     "sprite": "record",
+     "x": 232,
+     "y": 288,
+     "base": 321,
+     "hit": [
+      224,
+      288,
+      32,
+      20
+     ],
+     "use": "inspect:rec6"
+    },
+    {
+     "id": "rec7",
+     "sprite": "record",
+     "x": 408,
+     "y": 288,
+     "base": 321,
+     "hit": [
+      400,
+      288,
+      32,
+      20
+     ],
+     "use": "inspect:rec7"
+    },
+    {
+     "sprite": "desk",
+     "x": 304,
+     "y": 198,
+     "base": 224,
+     "solid": [
+      [
+       19,
+       13,
+       3,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "booklet",
+     "sprite": "booklet",
+     "x": 322,
+     "y": 197,
+     "base": 225,
+     "hit": [
+      304,
+      196,
+      48,
+      28
+     ],
+     "use": "inspect:booklet"
+    },
+    {
+     "id": "chair",
+     "sprite": "chair",
+     "x": 354,
+     "y": 202,
+     "base": 224,
+     "solid": [
+      [
+       22,
+       13,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      352,
+      200,
+      16,
+      24
+     ],
+     "use": "dialogue:chair"
+    },
+    {
+     "sprite": "cot",
+     "x": 416,
+     "y": 232,
+     "base": 256,
+     "solid": [
+      [
+       26,
+       15,
+       3,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "rec2",
+     "sprite": "record",
+     "x": 432,
+     "y": 231,
+     "base": 257,
+     "hit": [
+      416,
+      230,
+      48,
+      26
+     ],
+     "use": "inspect:rec2"
+    },
+    {
+     "sprite": "box",
+     "x": 448,
+     "y": 194,
+     "base": 208,
+     "solid": [
+      [
+       28,
+       12,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "table",
+     "sprite": "sheetSmall",
+     "x": 449,
+     "y": 187,
+     "base": 209,
+     "hit": [
+      446,
+      184,
+      20,
+      24
+     ],
+     "use": "inspect:table"
+    },
+    {
+     "id": "plant",
+     "sprite": "plant",
+     "x": 385,
+     "y": 174,
+     "base": 192,
+     "solid": [
+      [
+       24,
+       11,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      384,
+      174,
+      16,
+      18
+     ],
+     "use": "dialogue:plant"
+    },
+    {
+     "id": "bowl",
+     "sprite": "bowl",
+     "x": 195,
+     "y": 248,
+     "base": 254,
+     "hit": [
+      192,
+      244,
+      16,
+      14
+     ],
+     "use": "dialogue:bowl"
+    }
+   ],
+   "player_look": "suit",
+   "chapter": 1
+  }
+ ]
+}

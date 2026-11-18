@@ -1,0 +1,134 @@
+{
+ "_note": "개발용. 출시 빌드에서는 이 파일을 뺀다. 게임 주소 끝에 #test를 붙여 열면 아래 지점에서 바로 시작할 수 있다. 테스트 중에는 진짜 저장을 건드리지 않는다.",
+ "ui": {
+  "title": "테스트 시작 지점",
+  "sub": "테스트 중에는 진행이 저장되지 않아요. 왼쪽 위 [테스트 메뉴]로 언제든 돌아와요.",
+  "badge": "테스트 메뉴"
+ },
+ "starts": [
+  {
+   "id": "s0_myroom",
+   "label": "0단계 · 내 방 (처음)",
+   "map": "myroom",
+   "spawn": "start",
+   "chapter": 0,
+   "set": []
+  },
+  {
+   "id": "s0_home",
+   "label": "0단계 · 거실 (내 방 문서 읽음)",
+   "map": "home",
+   "spawn": "entry",
+   "chapter": 0,
+   "set": [
+    "read:permit",
+    "read:diary",
+    "read:history"
+   ]
+  },
+  {
+   "id": "s0_plaza",
+   "label": "0단계 · 거주구 광장 (할머니께 인사함)",
+   "map": "plaza",
+   "spawn": "entry",
+   "chapter": 0,
+   "set": [
+    "read:permit",
+    "read:diary",
+    "read:history",
+    "event:family_goodbye"
+   ]
+  },
+  {
+   "id": "s0_lab",
+   "label": "0단계 · 연구실 (친구와 인사함)",
+   "map": "lab",
+   "spawn": "entry",
+   "chapter": 0,
+   "set": [
+    "read:permit",
+    "read:diary",
+    "read:history",
+    "event:family_goodbye",
+    "event:friends_goodbye"
+   ]
+  },
+  {
+   "id": "s0_dock",
+   "label": "0단계 · 승강장 (노트 받음, 중계기 점검 전)",
+   "map": "dock",
+   "spawn": "entry",
+   "chapter": 0,
+   "set": [
+    "read:permit",
+    "read:diary",
+    "read:history",
+    "event:family_goodbye",
+    "event:friends_goodbye",
+    "event:kit_given"
+   ]
+  },
+  {
+   "id": "s1_base",
+   "label": "1단계 · 지구 기지 도착",
+   "map": "base",
+   "spawn": "arrive",
+   "chapter": 1,
+   "set": [
+    "read:permit",
+    "read:diary",
+    "read:history",
+    "event:family_goodbye",
+    "event:friends_goodbye",
+    "event:kit_given",
+    "event:relay_spoken",
+    "solved:relay_read",
+    "event:relay_checked",
+    "event:relay_understood"
+   ]
+  },
+  {
+   "id": "s1_library",
+   "label": "1단계 · 도서관 입구",
+   "map": "library",
+   "spawn": "fromBase",
+   "chapter": 1,
+   "set": [
+    "read:permit",
+    "read:diary",
+    "read:history",
+    "event:family_goodbye",
+    "event:friends_goodbye",
+    "event:kit_given",
+    "event:relay_spoken",
+    "solved:relay_read",
+    "event:relay_checked",
+    "event:relay_understood",
+    "event:arrived_earth"
+   ]
+  },
+  {
+   "id": "s1_report",
+   "label": "1단계 · 보고서 직전 (표 찾고 rec7 봄, 기지)",
+   "map": "base",
+   "spawn": "fromLibrary",
+   "chapter": 1,
+   "set": [
+    "read:permit",
+    "read:diary",
+    "read:history",
+    "event:family_goodbye",
+    "event:friends_goodbye",
+    "event:kit_given",
+    "event:relay_spoken",
+    "solved:relay_read",
+    "event:relay_checked",
+    "event:relay_understood",
+    "event:arrived_earth",
+    "event:table_found",
+    "seen:rec7",
+    "event:forward_note"
+   ]
+  }
+ ]
+}

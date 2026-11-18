@@ -1,0 +1,267 @@
+<title>THE Ultima</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&display=swap">
+<style>
+/* 레이아웃: 화면 전체가 게임 캔버스. 그 위에 대화창, 노트(아래 1/3), 서류(문서·연습·보고서·시작/끝 화면)가 뜬다 */
+:root{
+  --void:#0d0b12; --paper:#efe0bd; --rule:#cdb68c; --margin:#c96a4f; --ink:#33263a; --cardboard:#5a4a63;
+  --dlg:#e9e4d6; --dlgink:#26212e; --frame:#6f7d88; --warm:#f1e2c2; --warmframe:#b98a52; --relay:#5fd0c0;
+  --hi:#ffe08a; --print:#3b5b8a;
+  --f-text:'Gowun Batang','AppleMyungjo','Batang',serif;
+  --f-hand:'Nanum Pen Script','Gowun Batang',cursive;
+  --panelw:min(380px,40vw); --cell:min(70px,9.1vh);   /* 노트 칸: 한 줄 4칸 */
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--void);color:var(--dlg);
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#game{position:fixed;left:0;top:0;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:none}
+#game.pick{cursor:pointer}
+
+/* 대화: 직접 말하기(가족) / 중계기(그 밖의 사람) / 혼잣말 */
+.dlg{position:fixed;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 4vh);width:min(720px,92vw);
+  background:var(--dlg);color:var(--dlgink);padding:clamp(12px,2vw,20px) clamp(14px,2.4vw,24px);
+  box-shadow:0 0 0 3px var(--dlgink),0 0 0 7px var(--frame),0 0 0 10px var(--dlgink)}
+.dlg.direct{background:var(--warm);box-shadow:0 0 0 3px var(--dlgink),0 0 0 7px var(--warmframe),0 0 0 10px var(--dlgink)}
+.dlg.relay{box-shadow:0 0 0 3px var(--dlgink),0 0 0 7px var(--relay),0 0 0 10px var(--dlgink)}
+.dlg.thought p{font-style:italic;color:#4a4256}
+.dlg .tags{position:absolute;top:-16px;left:16px;display:flex;gap:6px}
+.dlg .who{background:var(--dlgink);color:var(--warm);font-family:var(--f-text);font-weight:700;font-size:clamp(12px,1.6vw,15px);padding:1px 12px}
+.dlg .mode{font-family:var(--f-text);font-size:12px;padding:2px 8px;background:var(--dlgink);color:var(--warmframe)}
+.dlg.relay .mode{color:var(--relay)}
+.dlg p{font-family:var(--f-text);font-size:clamp(15px,2vw,20px);line-height:1.6;margin:0;min-height:1.6em}
+.dlg .next{position:absolute;right:14px;bottom:8px;color:var(--frame);font-size:12px;animation:bob 1s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(-3px)}}
+
+.card{position:fixed;inset:0;z-index:20;display:grid;place-items:center;pointer-events:none;font-family:var(--f-text);color:#efe4d0;text-align:center}
+.card div{display:grid;gap:6px}
+.card b{font-size:clamp(26px,4vw,44px);letter-spacing:.06em}
+.card span{font-size:clamp(13px,1.6vw,16px);color:#a99fbb}
+
+.iconbtn{position:fixed;z-index:12;border:0;padding:0;background:none;cursor:pointer;image-rendering:pixelated}
+.iconbtn canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+.iconbtn:focus-visible{outline:2px solid var(--hi);outline-offset:3px}
+/* 노트 버튼: 오른쪽 아래 / 받은 아이템(사전 기록지 등): 왼쪽 위에 차례로 쌓인다 (story.json items) */
+#bookbtn{right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);width:60px;height:60px}
+.items{position:fixed;z-index:12;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 16px);display:flex;flex-wrap:wrap;gap:12px;max-width:50vw}
+.items .iconbtn{position:static;width:60px;height:60px}
+#closeinsp{right:max(16px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 16px);width:48px;height:48px}
+
+/* 노트: 화면 오른쪽 세로 판(위 15% ~ 아래 12%). 맨 위 네모 다섯 개가 1~5장. 펼친 채로 걸어 다닌다.
+   폭이 좁은 화면(760px 미만)에서는 아래쪽에 붙는다. */
+.book{position:fixed;z-index:11;right:max(3vw,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 15vh);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 12vh);width:var(--panelw);
+  background-color:var(--paper);color:var(--ink);padding:18px 18px 14px 46px;
+  background-image:linear-gradient(to right,transparent 33px,var(--margin) 33px,var(--margin) 35px,transparent 35px),
+    repeating-linear-gradient(to bottom,transparent 0 33px,var(--rule) 33px 34px);
+  box-shadow:0 0 0 3px #2b1c1e,0 0 0 9px var(--cardboard),0 0 0 12px #2b1c1e,10px 12px 0 6px rgba(0,0,0,.45);
+  font-family:var(--f-hand);display:flex;flex-direction:column;gap:10px}
+.book .rings{position:absolute;left:-14px;top:28px;bottom:28px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
+.book .rings i{width:22px;height:10px;background:#8b95a1;box-shadow:inset 0 -3px 0 #5d6670,0 0 0 2px #2b1c1e}
+.bhead{display:flex;align-items:center;gap:8px}
+.ptabs{display:flex;gap:6px;flex:1}
+.ptabs button{width:30px;height:30px;padding:0;border:2px solid var(--ink);background:transparent;color:var(--ink);font-family:var(--f-hand);font-size:20px;line-height:1;cursor:pointer}
+.ptabs button.on{background:var(--ink);color:var(--paper)}
+.ptabs button.used:not(.on){background:#e6d6b0}
+.bhead .bclose{background:none;border:0;color:var(--ink);font-family:var(--f-hand);font-size:28px;line-height:1;cursor:pointer;padding:2px 6px}
+.bhead button:focus-visible,.cell:focus-visible{outline:2px dashed var(--ink);outline-offset:2px}
+.fwd{font-size:20px;color:#8a3a2a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cells{display:grid;grid-template-columns:repeat(4,var(--cell));grid-auto-rows:var(--cell);gap:6px;align-content:start}
+.cell{width:var(--cell);height:var(--cell);border:2px dashed #b59a6e;background:transparent;padding:4px;display:grid;place-items:center;cursor:default}
+.cell.full{border-style:solid;border-color:transparent;cursor:pointer;grid-template-rows:minmax(0,1fr) auto;padding:3px 2px}
+.cell.sel{border-color:var(--margin);border-style:solid}
+.cell .gtext{font-family:var(--f-hand);font-size:18px;line-height:1;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#8a3a2a}
+/* 노트 아래쪽: 고른 글자의 추측 칸 + 메모 */
+.notecol{flex:1;display:grid;grid-template-rows:auto minmax(0,1fr);gap:6px;min-width:0;min-height:0}
+.guess{display:flex;align-items:center;gap:8px;min-width:0}
+.guess .gglyph canvas{display:block;width:30px;height:30px;image-rendering:pixelated;background:#e6d6b0}
+.guess input{font-family:var(--f-hand);font-size:24px;line-height:30px;width:10em;max-width:100%;min-width:0;border:0;border-bottom:2px solid var(--ink);
+  background:transparent;color:var(--ink);padding:0 2px;-webkit-user-select:text;user-select:text}
+.guess input:focus{outline:none;border-bottom-color:var(--margin)}
+.guess input::placeholder{color:#b59a6e}
+.guess button{background:none;border:0;font-family:var(--f-hand);font-size:20px;color:#8a3a2a;cursor:pointer;padding:2px 6px;white-space:nowrap}
+.guess button:focus-visible{outline:2px dashed var(--ink)}
+.cell canvas{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.book textarea{font-family:var(--f-hand);font-size:26px;line-height:34px;color:var(--ink);background:transparent;border:0;resize:none;padding:0;margin:0;
+  width:10em;max-width:100%;height:100%;overflow-x:hidden;overflow-y:auto;word-break:break-all;overflow-wrap:anywhere;letter-spacing:0;
+  -webkit-user-select:text;user-select:text}   /* 한 줄에 한글 10글자: 실제 너비는 ui.fitMemoWidth()가 손글씨 폰트로 재서 맞춘다 */
+.book textarea:focus{outline:none}
+/* 노트를 펼치면 대화창과 서류는 노트 왼쪽 영역 가운데로 */
+body.docked .dlg{left:calc((100vw - var(--panelw) - 3vw) / 2);width:min(680px,calc(100vw - var(--panelw) - 10vw))}
+@media (max-width:759px){
+  .book{left:4vw;right:4vw;top:auto;width:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);height:46vh}
+  .book .rings{left:40px;right:24px;top:-14px;bottom:auto;flex-direction:row}
+  .book .rings i{width:10px;height:22px}
+  body.docked .dlg{left:50%;width:92vw;bottom:calc(46vh + 18px)}
+}
+
+/* 서류: 사전 기록지 · 표기 연습 · 연구 보고서 · 끝 */
+.doc{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:rgba(8,6,12,.84);
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.doc.withbook{padding-right:calc(var(--panelw) + 6vw)}
+@media (max-width:759px){.doc.withbook{padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:calc(46vh + 10px)}}
+.sheet{width:min(560px,100%);max-height:100%;overflow:auto;background:#ece6d6;color:#26212e;padding:26px 30px;font-family:var(--f-text);
+  box-shadow:0 0 0 3px #26212e,10px 12px 0 rgba(0,0,0,.45);display:grid;gap:10px}
+.sheet h1{font-size:24px;margin:0;letter-spacing:.04em;text-wrap:balance}
+.sheet h2{font-size:15px;margin:8px 0 0;color:var(--print);border-bottom:1px solid #b8ab8a;padding-bottom:3px}
+.sheet h3{margin:0;font-size:13px;letter-spacing:.06em;font-weight:700;color:var(--print)}
+.sheet p{margin:0;font-size:15px;line-height:1.65}
+.shead{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#6b6478;border-bottom:3px double #26212e;padding-bottom:6px}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:14px}
+.meta dt{font-weight:700;color:var(--print)}
+.meta dd{margin:0}
+.sfoot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+.stamp{border:3px solid #a8432e;color:#a8432e;padding:2px 10px;font-weight:700;transform:rotate(-6deg);opacity:.8}
+.sheet button.act{font-family:var(--f-text);font-weight:700;font-size:16px;background:#26212e;color:#ece6d6;border:0;padding:10px 22px;cursor:pointer}
+.sheet button.act:disabled{opacity:.35;cursor:default}
+.sheet button:focus-visible{outline:2px solid var(--print);outline-offset:3px}
+.dict{display:grid;gap:8px;color:var(--print)}
+.dict .row,.pieces{display:flex;flex-wrap:wrap;gap:8px 14px}
+.dict .part{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:700}
+.dict .part canvas,.pieces canvas,.pword canvas,#repfig canvas{image-rendering:pixelated}
+.pword{display:flex;gap:14px;justify-content:center;padding:10px 0}
+.pword figure{margin:0;display:grid;justify-items:center;gap:4px;font-size:22px;font-weight:700;min-width:56px}
+.pword figure.cur canvas{outline:3px solid #d89a3a;outline-offset:3px}
+.pieces button{background:#f6f2e8;border:1px solid #b8ab8a;padding:6px;cursor:pointer;display:grid;place-items:center}
+.pieces button.on{background:#d89a3a33;border-color:#d89a3a}
+.pieces button{grid-auto-flow:row;gap:3px}
+.pieces .jamo{font-family:var(--f-text);font-size:13px;font-weight:700;color:var(--print);line-height:1}
+.sheet.doc-device .pieces button{background:#1b2430;border-color:#2a3140}
+.sheet.doc-device .pieces button.on{background:#5fd0c033;border-color:#5fd0c0}
+.sheet.doc-device .pieces .jamo,.sheet.doc-device h3{color:#9fe8dc}
+.sheet.doc-device .pword figcaption{color:#ffe08a}
+.sheet.doc-device .pword figure.cur canvas{outline-color:#5fd0c0}
+/* 받아 적은 소리(로마자)가 잠깐 보였다가 기계 표기로 바뀐다 */
+.pword .romaji{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:clamp(22px,3.2vw,32px);letter-spacing:.14em;color:#9fe8dc;padding:22px 0;transition:opacity .45s,filter .45s}
+.pword .romaji.fading{opacity:0;filter:blur(5px)}
+.pword figure.morph{animation:morphIn .5s ease-out both}
+@keyframes morphIn{from{opacity:0;filter:blur(5px);transform:translateY(-6px)}}
+#repfig{display:grid;justify-items:center}
+#reptext{font-family:var(--f-hand);font-size:24px;line-height:32px;min-height:72px;resize:none;border:0;background:#f6f2e8;color:var(--ink);padding:6px 10px;
+  box-shadow:inset 0 0 0 1px #b8ab8a;-webkit-user-select:text;user-select:text}
+#reptext:focus-visible{outline:2px solid var(--print)}
+
+/* 내 방에서 꺼내 읽는 것들 */
+.sheet ol.tl{margin:0;padding:0;list-style:none;display:grid;gap:6px;border-left:3px solid var(--print);padding-left:14px}
+.sheet ol.tl li{font-size:15px;line-height:1.5}
+.sheet ol.tl b{display:block;color:var(--print);font-size:13px}
+.sheet .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;font-weight:700}
+.sheet .flow span{background:#f6f2e8;border:1px solid #b8ab8a;padding:6px 10px}
+.sheet .flow i{font-style:normal;color:var(--print)}
+.sheet .note{font-size:13px;color:#6b6478}
+
+/* 일기장: 펼친 책. 넓은 화면은 양면, 좁은 화면은 한 면. 넘길 때 책등을 축으로 접힌다 */
+.diarybook{width:min(920px,100%);height:min(620px,100%);display:grid;grid-template-rows:minmax(0,1fr) auto;gap:10px;
+  background:#5a3826;padding:14px;box-shadow:0 0 0 3px #2b1c1e,10px 12px 0 rgba(0,0,0,.45);font-family:var(--f-hand)}
+.diarybook .spread{display:grid;grid-template-columns:1fr 1fr;min-height:0;perspective:1400px}
+.diarybook .spread.single{grid-template-columns:1fr}
+.dpage{position:relative;min-width:0;min-height:0;overflow:auto;background-color:var(--paper);color:var(--ink);
+  background-image:repeating-linear-gradient(to bottom,transparent 0 39px,var(--rule) 39px 40px);background-position:0 30px;
+  padding:24px 28px 44px 40px;backface-visibility:hidden}
+.dpage.left{box-shadow:inset -16px 0 20px -14px rgba(0,0,0,.35)}
+.dpage.right{box-shadow:inset 16px 0 20px -14px rgba(0,0,0,.35)}
+.spread.single .dpage.left{box-shadow:none}
+.dpage.blank{background-image:none}
+.ddate{font-size:clamp(20px,2.4vw,28px);line-height:40px;color:#8a3a2a}
+.dbody p{margin:0;font-size:clamp(22px,2.7vw,31px);line-height:40px}
+.dnum{position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:18px;color:#a08a6a}
+.dnav{display:grid;grid-template-columns:1fr auto auto auto 1fr;align-items:center;gap:12px;color:#efe0bd;font-family:var(--f-text)}
+.dnav .dturn:first-child{grid-column:2}
+.dnav .dno{font-size:14px;min-width:56px;text-align:center;font-variant-numeric:tabular-nums}
+.dnav .act{grid-column:5;justify-self:end;font-family:var(--f-text);font-weight:700;font-size:15px;background:#efe0bd;color:#3a2a28;border:0;padding:8px 18px;cursor:pointer}
+.dturn{background:#efe0bd;color:#3a2a28;border:0;width:42px;height:34px;font-size:15px;cursor:pointer}
+.dturn:disabled{opacity:.3;cursor:default}
+.dturn:focus-visible,.dnav .act:focus-visible{outline:2px solid var(--hi);outline-offset:2px}
+.dpage.out-next{transform-origin:left center;animation:pgOutNext .22s ease-in forwards}
+.dpage.in-next{transform-origin:right center;animation:pgInNext .22s ease-out}
+.dpage.out-prev{transform-origin:right center;animation:pgOutPrev .22s ease-in forwards}
+.dpage.in-prev{transform-origin:left center;animation:pgInPrev .22s ease-out}
+@keyframes pgOutNext{to{transform:rotateY(-90deg)}}
+@keyframes pgInNext{from{transform:rotateY(90deg)}}
+@keyframes pgOutPrev{to{transform:rotateY(90deg)}}
+@keyframes pgInPrev{from{transform:rotateY(-90deg)}}
+
+/* 중계기 점검 화면 */
+.sheet.doc-device{background:#11161f;color:#cfe9e4;box-shadow:0 0 0 3px #2a3140,0 0 0 6px #5fd0c0,10px 12px 0 rgba(0,0,0,.45)}
+.sheet.doc-device .shead{color:#7f8a94;border-bottom-color:#5fd0c0}
+.sheet.doc-device h2,.sheet.doc-device .meta dt{color:#5fd0c0;border-bottom-color:#2a3140}
+.sheet.doc-device .act{background:#5fd0c0;color:#11161f}
+.mline{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;background:#0b0f16;box-shadow:inset 0 0 0 1px #2a3140}
+.mline canvas{image-rendering:pixelated}
+
+/* 개발용 테스트 메뉴 (주소 끝 #test 일 때만) */
+.testbtn{position:fixed;z-index:12;left:max(12px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
+  font-family:var(--f-text);font-size:12px;background:#a8432e;color:#fff;border:0;padding:4px 10px;cursor:pointer;opacity:.85}
+.testbtn:focus-visible{outline:2px solid var(--hi)}
+.teststarts{display:grid;gap:8px;width:100%}
+.teststarts button{font-family:var(--f-text);font-size:15px;text-align:left;background:#f6f2e8;border:1px solid #b8ab8a;color:#26212e;padding:10px 14px;cursor:pointer}
+.teststarts button:hover,.teststarts button:focus-visible{border-color:#26212e;outline:none}
+
+/* 시작 화면, 알림, 데이터 오류 */
+.sheet.title{width:min(420px,100%);justify-items:center;text-align:center;gap:18px;padding:40px 30px}
+.sheet .gametitle{font-size:clamp(30px,5vw,44px);letter-spacing:.12em;margin:0}
+.titlebtns{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.sheet button.act.later{background:#8b95a1}
+.toast{position:fixed;z-index:30;left:50%;top:calc(env(safe-area-inset-top,0px) + 16px);transform:translateX(-50%);max-width:92vw;
+  background:#26212e;color:#ece6d6;font-family:var(--f-text);font-size:14px;padding:8px 14px;box-shadow:0 0 0 2px #a8432e}
+.fatal{position:fixed;inset:0;z-index:40;margin:0;padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));
+  background:var(--void);color:#efe4d0;font:14px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow:auto}
+
+/* touch */
+.pad{display:none}
+@media (pointer:coarse){
+  .pad{display:block}
+  .dpad{position:fixed;z-index:9;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(3,48px);gap:4px;touch-action:none}
+  .pad button{background:rgba(46,40,64,.7);color:#efe4d0;border:0;font-size:16px;touch-action:none}
+  .abtn{position:fixed;z-index:9;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 92px);width:64px;height:64px;border-radius:50%;background:rgba(111,125,136,.85)!important;font-size:22px!important}
+  body.docked .dpad{bottom:calc(46vh + 12px)}
+  body.docked .abtn{bottom:calc(46vh + 88px)}
+}
+@media (prefers-reduced-motion:reduce){.dlg .next,.shake,.dpage,.pword figure.morph{animation:none!important}.pword .romaji{transition:none}}
+</style>
+
+<canvas id="game" aria-label="THE Ultima"></canvas>
+<div class="dlg" id="dlg" hidden><span class="tags"><span class="who" id="dlgwho"></span><span class="mode" id="dlgmode"></span></span><p id="dlgtext"></p><span class="next">▼</span></div>
+<div class="card" id="card" hidden><div><b id="cardt"></b><span id="cards"></span></div></div>
+<button class="testbtn" id="testbtn" type="button" hidden></button>
+<button class="iconbtn" id="closeinsp" type="button" aria-label="닫기" hidden></button>
+<div class="items" id="items" aria-label="받은 아이템"></div>
+<button class="iconbtn" id="bookbtn" type="button" aria-label="노트" hidden></button>
+<div class="book" id="book" hidden>
+  <div class="rings"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="bhead">
+    <div class="ptabs" id="ptabs" role="tablist" aria-label="노트 장"></div>
+    <button class="bclose" id="closebook" type="button" aria-label="노트 덮기">✕</button>
+  </div>
+  <div class="fwd" id="fwd" hidden></div>
+  <div class="cells" id="cells"></div>
+  <div class="notecol">
+    <div class="guess" id="guessrow" hidden>
+      <span class="gglyph" id="guessglyph"></span>
+      <input id="guess" type="text" maxlength="10" spellcheck="false" autocomplete="off" aria-label="이 글자의 추측">
+      <button id="guessdel" type="button"></button>
+    </div>
+    <textarea id="memo" maxlength="60" rows="3" spellcheck="false" aria-label="메모"></textarea>
+  </div>
+</div>
+<div class="doc" id="doc" hidden><div class="sheet" id="docsheet" role="dialog"></div></div>
+<div class="doc" id="practice" hidden><div class="sheet" id="practicesheet" role="dialog"></div></div>
+<div class="doc" id="report" hidden><div class="sheet" id="reportsheet" role="dialog"></div></div>
+<div class="doc" id="end" hidden><div class="sheet" id="endsheet" role="dialog"></div></div>
+<div class="doc" id="title" hidden><div class="sheet title" id="titlesheet" role="dialog"></div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<pre class="fatal" id="fatal" hidden></pre>
+<div class="pad" aria-hidden="true">
+  <div class="dpad">
+    <span></span><button data-k="up">▲</button><span></span>
+    <button data-k="left">◀</button><span></span><button data-k="right">▶</button>
+    <span></span><button data-k="down">▼</button><span></span>
+  </div>
+  <button class="abtn" id="padA">!</button>
+</div>
+
+<script type="module" src="src/main.js"></script>

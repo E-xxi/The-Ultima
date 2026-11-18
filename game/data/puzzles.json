@@ -1,0 +1,41 @@
+{
+ "puzzles": [
+  {
+   "id": "relay_read",
+   "type": "compose_syllables",
+   "requires": [
+    "event:relay_spoken"
+   ],
+   "words": [
+    [
+     "ta",
+     "ne",
+     "o",
+     "ru",
+     "ke",
+     "yo"
+    ]
+   ],
+   "show_jamo": true,
+   "on_solve": [
+    "event:relay_checked"
+   ],
+   "after": "after_relay_read",
+   "intro_text": "daneoallgaeyo"
+  },
+  {
+   "id": "report1",
+   "type": "free_text_report",
+   "requires": [
+    "event:table_found",
+    "seen:rec7"
+   ],
+   "record": "rec7",
+   "max_length": 80,
+   "on_solve": [
+    "event:report1_sent",
+    "chapter_end:1"
+   ]
+  }
+ ]
+}

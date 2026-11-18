@@ -1,0 +1,10 @@
+{
+  "name": "the-ultima",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run.js && node tests/smoke.js && node tests/smoke.js continue && node tests/smoke.js test",
+    "serve": "python3 -m http.server 8000"
+  }
+}

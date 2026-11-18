@@ -1,0 +1,172 @@
+{
+ "records": [
+  {
+   "id": "rec1",
+   "photo": "meadow",
+   "tear": "tr",
+   "after": "after_animals",
+   "lines": [
+    {
+     "words": [
+      [
+       "grass"
+      ],
+      [
+       "many"
+      ]
+     ]
+    },
+    {
+     "words": [
+      [
+       "tree"
+      ],
+      [
+       "bird"
+      ],
+      [
+       "exist"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rec2",
+   "photo": "cat",
+   "tear": "bl",
+   "after": "after_animals",
+   "lines": [
+    {
+     "words": [
+      [
+       "cat"
+      ],
+      [
+       "house"
+      ],
+      [
+       "exist"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rec3",
+   "photo": "meal",
+   "tear": "",
+   "lines": [
+    {
+     "words": [
+      [
+       "person",
+       "house"
+      ],
+      [
+       "eat"
+      ]
+     ]
+    },
+    {
+     "redacted_name": 3
+    }
+   ]
+  },
+  {
+   "id": "rec6",
+   "photo": "sunwater",
+   "tear": "br",
+   "lines": [
+    {
+     "words": [
+      [
+       "sun"
+      ],
+      [
+       "water"
+      ],
+      [
+       "many"
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rec7",
+   "photo": "launch",
+   "tear": "tl",
+   "lines": [
+    {
+     "words": [
+      [
+       "earth"
+      ],
+      [
+       "die",
+       "hearsay"
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "booklets": [
+  {
+   "id": "booklet",
+   "entries": [
+    {
+     "picture": "tree",
+     "morpheme": "tree"
+    },
+    {
+     "picture": "bird",
+     "morpheme": "bird"
+    },
+    {
+     "picture": "cat",
+     "morpheme": "cat"
+    },
+    {
+     "picture": "water",
+     "morpheme": "water"
+    },
+    {
+     "picture": "sun",
+     "morpheme": "sun"
+    },
+    {
+     "picture": "house",
+     "morpheme": "house"
+    },
+    {
+     "damage": "blot"
+    },
+    {
+     "damage": "torn"
+    }
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "id": "table",
+   "after": "after_table",
+   "rows": [
+    {
+     "handwritten": "sun"
+    },
+    {
+     "handwritten": "water"
+    },
+    {},
+    {
+     "handwritten": "person"
+    },
+    {},
+    {}
+   ]
+  }
+ ]
+}
