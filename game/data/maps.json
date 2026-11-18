@@ -15,32 +15,59 @@
   "door1": {
    "to": "home/entry",
    "when": [
-    "read:permit",
-    "read:diary",
-    "read:history"
+    "event:study_done"
    ],
    "locked": "locked_door1"
   },
   "door2": {
    "to": "plaza/entry",
-   "when": [
-    "event:family_goodbye"
-   ],
-   "locked": "locked_door2"
+   "when": [],
+   "locked": "locked_generic"
   },
   "door3": {
    "to": "lab/entry",
-   "when": [
-    "event:friends_goodbye"
-   ],
-   "locked": "locked_door3"
+   "when": [],
+   "locked": "locked_generic"
   },
   "door4": {
    "to": "dock/entry",
    "when": [
+    "event:approved",
+    "event:family_goodbye",
+    "event:friends_goodbye",
     "event:kit_given"
    ],
    "locked": "locked_door4"
+  },
+  "back_home": {
+   "to": "myroom/fromHome",
+   "when": [],
+   "locked": "locked_generic"
+  },
+  "back_plaza": {
+   "to": "home/fromPlaza",
+   "when": [],
+   "locked": "locked_generic"
+  },
+  "back_lab": {
+   "to": "plaza/fromLab",
+   "when": [],
+   "locked": "locked_generic"
+  },
+  "back_dock": {
+   "to": "lab/fromDock",
+   "when": [],
+   "locked": "locked_generic"
+  },
+  "enter_rocket": {
+   "to": "baseinside/entry",
+   "when": [],
+   "locked": "locked_generic"
+  },
+  "exit_base": {
+   "to": "base/fromRocket",
+   "when": [],
+   "locked": "locked_generic"
   }
  },
  "start": {
@@ -78,6 +105,11 @@
      40,
      90,
      "right"
+    ],
+    "fromHome": [
+     168,
+     60,
+     "down"
     ]
    },
    "objects": [
@@ -180,20 +212,6 @@
      ]
     },
     {
-     "id": "permit",
-     "sprite": "permitDoc",
-     "x": 114,
-     "y": 71,
-     "base": 97,
-     "hit": [
-      112,
-      72,
-      16,
-      26
-     ],
-     "use": "read:permit"
-    },
-    {
      "id": "textbook",
      "sprite": "textbook",
      "x": 130,
@@ -220,6 +238,34 @@
       26
      ],
      "use": "read:diary"
+    },
+    {
+     "id": "plan",
+     "sprite": "planDoc",
+     "x": 114,
+     "y": 71,
+     "base": 97,
+     "hit": [
+      112,
+      72,
+      16,
+      26
+     ],
+     "use": "read:plan"
+    },
+    {
+     "id": "earthmap",
+     "sprite": "earthmap",
+     "x": 113,
+     "y": 20,
+     "base": 47,
+     "hit": [
+      112,
+      40,
+      30,
+      10
+     ],
+     "use": "read:earthmap"
     }
    ],
    "player_look": "me",
@@ -248,16 +294,29 @@
    "spawns": {
     "entry": [
      112,
-     138,
+     130,
      "up"
+    ],
+    "fromPlaza": [
+     184,
+     60,
+     "down"
     ]
    },
    "objects": [
     {
-     "sprite": "mat",
      "x": 96,
      "y": 132,
-     "flat": true
+     "flat": true,
+     "id": "back_home",
+     "door": "back_home",
+     "use": "door:back_home",
+     "hit": [
+      96,
+      140,
+      32,
+      4
+     ]
     },
     {
      "sprite": "window",
@@ -390,16 +449,29 @@
    "spawns": {
     "entry": [
      144,
-     138,
+     130,
      "up"
+    ],
+    "fromLab": [
+     248,
+     60,
+     "down"
     ]
    },
    "objects": [
     {
-     "sprite": "mat",
      "x": 128,
      "y": 132,
-     "flat": true
+     "flat": true,
+     "id": "back_plaza",
+     "door": "back_plaza",
+     "use": "door:back_plaza",
+     "hit": [
+      128,
+      140,
+      32,
+      4
+     ]
     },
     {
      "sprite": "window",
@@ -590,19 +662,32 @@
    "spawns": {
     "entry": [
      112,
-     138,
+     130,
      "up"
+    ],
+    "fromDock": [
+     152,
+     60,
+     "down"
     ]
    },
    "objects": [
     {
-     "sprite": "mat",
      "x": 96,
      "y": 132,
-     "flat": true
+     "flat": true,
+     "id": "back_lab",
+     "door": "back_lab",
+     "use": "door:back_lab",
+     "hit": [
+      96,
+      140,
+      32,
+      4
+     ]
     },
     {
-     "id": "terminalP",
+     "id": "apply",
      "sprite": "terminal",
      "x": 32,
      "y": 40,
@@ -621,7 +706,16 @@
       16,
       24
      ],
-     "use": "dialogue:terminalP"
+     "use": "dialogue:apply",
+     "sprite_if": [
+      {
+       "when": [
+        "event:study_done",
+        "!event:applied"
+       ],
+       "sprite": "terminalOn"
+      }
+     ]
     },
     {
      "sprite": "desk",
@@ -673,6 +767,14 @@
        1,
        1
       ]
+     ],
+     "id": "mat_catalog",
+     "use": "read:mat_catalog",
+     "hit": [
+      176,
+      48,
+      16,
+      16
      ]
     },
     {
@@ -687,6 +789,14 @@
        1,
        1
       ]
+     ],
+     "id": "mat_preserve",
+     "use": "read:mat_preserve",
+     "hit": [
+      192,
+      48,
+      16,
+      16
      ]
     },
     {
@@ -702,6 +812,72 @@
       10
      ],
      "use": "door:door4"
+    },
+    {
+     "id": "mat_sat",
+     "sprite": "terminal",
+     "x": 48,
+     "y": 40,
+     "base": 64,
+     "solid": [
+      [
+       3,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      48,
+      40,
+      16,
+      24
+     ],
+     "use": "read:mat_sat"
+    },
+    {
+     "id": "mat_manual",
+     "sprite": "bookshelf",
+     "x": 32,
+     "y": 98,
+     "base": 128,
+     "solid": [
+      [
+       2,
+       7,
+       2,
+       1
+      ]
+     ],
+     "hit": [
+      32,
+      98,
+      32,
+      30
+     ],
+     "use": "read:mat_manual"
+    },
+    {
+     "id": "mat_timeline",
+     "sprite": "terminal",
+     "x": 176,
+     "y": 104,
+     "base": 128,
+     "solid": [
+      [
+       11,
+       7,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      176,
+      104,
+      16,
+      24
+     ],
+     "use": "read:mat_timeline"
     }
    ],
    "player_look": "me",
@@ -728,16 +904,24 @@
    "spawns": {
     "entry": [
      96,
-     106,
+     98,
      "up"
     ]
    },
    "objects": [
     {
-     "sprite": "mat",
      "x": 80,
      "y": 100,
-     "flat": true
+     "flat": true,
+     "id": "back_dock",
+     "door": "back_dock",
+     "use": "door:back_dock",
+     "hit": [
+      80,
+      108,
+      32,
+      4
+     ]
     },
     {
      "id": "board",
@@ -837,6 +1021,16 @@
      304,
      124,
      "down"
+    ],
+    "fromRocket": [
+     88,
+     124,
+     "down"
+    ],
+    "fromRover": [
+     232,
+     168,
+     "down"
     ]
    },
    "objects": [
@@ -860,7 +1054,8 @@
       32,
       48
      ],
-     "use": "dialogue:rocket"
+     "use": "door:enter_rocket",
+     "door": "enter_rocket"
     },
     {
      "id": "comm",
@@ -963,6 +1158,28 @@
       16
      ],
      "use": "dialogue:bunker"
+    },
+    {
+     "id": "rover_base",
+     "sprite": "rover",
+     "x": 208,
+     "y": 176,
+     "base": 208,
+     "solid": [
+      [
+       13,
+       12,
+       3,
+       1
+      ]
+     ],
+     "hit": [
+      208,
+      176,
+      48,
+      32
+     ],
+     "use": "dialogue:rover_base"
     }
    ],
    "player_look": "suit",
@@ -1053,6 +1270,11 @@
     "fromBase": [
      56,
      70,
+     "down"
+    ],
+    "nearRec1": [
+     80,
+     296,
      "down"
     ]
    },
@@ -1540,6 +1762,555 @@
    ],
    "player_look": "suit",
    "chapter": 1
+  },
+  {
+   "id": "ruins",
+   "size": [
+    28,
+    18
+   ],
+   "wall": "rock",
+   "dark": 0,
+   "tint": "rgba(200,120,60,.14)",
+   "wind": true,
+   "tiles": [
+    "RRRRRRRRRRRRRRRRRRRRRRRRRRRR",
+    "RSSRRSSSSSRSSSSSSSRSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSPPPPPSR",
+    "RSSSSSSSSSSSSSSSSSSSSPPPPPSR",
+    "RSSSSSSSSSSSSSSSSSSSSPPPPPSR",
+    "RSSSSSSDDSSSSDDSSSSSSPPPPPRR",
+    "RSSSSSSDDSSSSDDSSSSSSPPPPPRR",
+    "RSSSSSSDDSSSSDDSSSSSSSSSSSSR",
+    "RSSSSSSDDSSSSDDSSSSSSSSSSSSR",
+    "RSDDDDDDDDDDDDDDDDDDDDDDDDSR",
+    "RSDDDDDDDDDDDDDDDDDDDDDDDDSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSSSSSR",
+    "RRSSSSSSSSSSSSSSSSSSSSSSSSRR",
+    "RSRSSSSSSSSSSSRRSSSSSSSSSSSR",
+    "RRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+   ],
+   "spawns": {
+    "arrive": [
+     88,
+     224,
+     "right"
+    ]
+   },
+   "player_look": "suit",
+   "chapter": 2,
+   "objects": [
+    {
+     "id": "rover_ruins",
+     "sprite": "rover",
+     "x": 32,
+     "y": 176,
+     "base": 208,
+     "solid": [
+      [
+       2,
+       12,
+       3,
+       1
+      ]
+     ],
+     "hit": [
+      32,
+      176,
+      48,
+      32
+     ],
+     "use": "dialogue:rover_ruins"
+    },
+    {
+     "sprite": "ruinhouse",
+     "x": 96,
+     "y": 40,
+     "base": 80,
+     "solid": [
+      [
+       6,
+       3,
+       3,
+       2
+      ]
+     ]
+    },
+    {
+     "id": "spot_doorstep",
+     "x": 104,
+     "y": 80,
+     "base": 81,
+     "hit": [
+      104,
+      80,
+      32,
+      12
+     ],
+     "use": "read:spot_doorstep"
+    },
+    {
+     "sprite": "ruinhouse",
+     "x": 192,
+     "y": 40,
+     "base": 80,
+     "solid": [
+      [
+       12,
+       3,
+       3,
+       2
+      ]
+     ]
+    },
+    {
+     "id": "spot_meal",
+     "x": 200,
+     "y": 80,
+     "base": 81,
+     "hit": [
+      200,
+      80,
+      32,
+      12
+     ],
+     "use": "read:spot_meal"
+    },
+    {
+     "id": "spot_meadow",
+     "sprite": "stump",
+     "x": 128,
+     "y": 208,
+     "base": 222,
+     "solid": [
+      [
+       8,
+       13,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      128,
+      204,
+      16,
+      20
+     ],
+     "use": "read:spot_meadow"
+    },
+    {
+     "id": "bike",
+     "sprite": "bike",
+     "x": 236,
+     "y": 210,
+     "base": 224,
+     "solid": [
+      [
+       15,
+       13,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      236,
+      206,
+      28,
+      20
+     ],
+     "use": "dialogue:bike"
+    },
+    {
+     "id": "launch_trace",
+     "sprite": "rubble",
+     "x": 368,
+     "y": 114,
+     "base": 128,
+     "solid": [
+      [
+       23,
+       7,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      364,
+      108,
+      24,
+      24
+     ],
+     "use": "dialogue:launch_trace"
+    },
+    {
+     "id": "inscription2",
+     "sprite": "ruinwall",
+     "x": 272,
+     "y": 48,
+     "base": 76,
+     "solid": [
+      [
+       17,
+       4,
+       2,
+       1
+      ]
+     ],
+     "hit": [
+      272,
+      48,
+      32,
+      30
+     ],
+     "use": "dialogue:inscription2"
+    },
+    {
+     "sprite": "shrub",
+     "x": 64,
+     "y": 66,
+     "base": 80
+    },
+    {
+     "sprite": "shrub",
+     "x": 336,
+     "y": 226,
+     "base": 240
+    }
+   ]
+  },
+  {
+   "id": "baseinside",
+   "size": [
+    14,
+    10
+   ],
+   "wall": "colony",
+   "dark": 0,
+   "tiles": [
+    "WWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WMMMMMMMMMMMMW",
+    "WWWWWWWWWWWWWW"
+   ],
+   "player_look": "suit",
+   "chapter": 3,
+   "spawns": {
+    "entry": [
+     112,
+     130,
+     "up"
+    ]
+   },
+   "objects": [
+    {
+     "sprite": "window",
+     "x": 48,
+     "y": 18,
+     "base": 47
+    },
+    {
+     "sprite": "window",
+     "x": 160,
+     "y": 18,
+     "base": 47
+    },
+    {
+     "id": "inbox",
+     "sprite": "terminal",
+     "x": 32,
+     "y": 40,
+     "base": 64,
+     "solid": [
+      [
+       2,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      32,
+      40,
+      16,
+      24
+     ],
+     "use": "dialogue:inbox"
+    },
+    {
+     "sprite": "desk",
+     "x": 80,
+     "y": 54,
+     "base": 80,
+     "solid": [
+      [
+       5,
+       4,
+       3,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "bench",
+     "x": 80,
+     "y": 44,
+     "base": 81,
+     "hit": [
+      80,
+      44,
+      48,
+      34
+     ],
+     "use": "dialogue:bench"
+    },
+    {
+     "id": "analyzer",
+     "sprite": "crate",
+     "x": 176,
+     "y": 50,
+     "base": 64,
+     "solid": [
+      [
+       11,
+       3,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      176,
+      48,
+      16,
+      16
+     ],
+     "use": "dialogue:analyzer"
+    },
+    {
+     "id": "bunk",
+     "sprite": "bed",
+     "x": 144,
+     "y": 88,
+     "base": 112,
+     "solid": [
+      [
+       9,
+       6,
+       3,
+       1
+      ]
+     ],
+     "hit": [
+      144,
+      88,
+      48,
+      24
+     ],
+     "use": "dialogue:bunk"
+    },
+    {
+     "id": "exit_base",
+     "door": "exit_base",
+     "x": 96,
+     "y": 132,
+     "base": 0,
+     "flat": true,
+     "hit": [
+      96,
+      140,
+      32,
+      4
+     ],
+     "use": "door:exit_base"
+    },
+    {
+     "sprite": "mat",
+     "x": 96,
+     "y": 132,
+     "flat": true
+    }
+   ]
+  },
+  {
+   "id": "dwelling",
+   "size": [
+    24,
+    16
+   ],
+   "wall": "rock",
+   "dark": 0,
+   "tint": "rgba(190,110,60,.18)",
+   "wind": true,
+   "tiles": [
+    "RRRRRRRRRRRRRRRRRRRRRRRR",
+    "RSSSSRRSSSSSSSSSSSSRSSSR",
+    "RSSSSSSSWWWWWWWWSSSSSSSR",
+    "RSSSSSSSWWWWWWWWSSSSSSSR",
+    "RSSSSSSSWOOOOOOWSSSSSSSR",
+    "RSSSSSSSWOOOOOOWSSSSSSSR",
+    "RSSSSSSSWOOOOOOWSSSSSSSR",
+    "RRSSSSSSWOOOOOOWSSSSSSSR",
+    "RSSSSSSSWWWOOWWWSSSSSSSR",
+    "RSSSSSSSSSSDDSSSSSSSSSRR",
+    "RSSSDDDDDDDDDSSSSSSSSSRR",
+    "RSSSDDDDDDDDDSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSSSSSSSR",
+    "RSSSSSSSSSSSSSSSSRSSSSSR",
+    "RRRRRRRRRRRRRRRRRRRRRRRR"
+   ],
+   "player_look": "suit",
+   "chapter": 4,
+   "spawns": {
+    "arrive": [
+     112,
+     200,
+     "up"
+    ]
+   },
+   "objects": [
+    {
+     "id": "rover_dwell",
+     "sprite": "rover",
+     "x": 48,
+     "y": 168,
+     "base": 200,
+     "solid": [
+      [
+       3,
+       11,
+       3,
+       1
+      ]
+     ],
+     "hit": [
+      48,
+      168,
+      48,
+      32
+     ],
+     "use": "dialogue:rover_dwell"
+    },
+    {
+     "sprite": "inscr",
+     "x": 161,
+     "y": 130,
+     "base": 143
+    },
+    {
+     "sprite": "inscr",
+     "x": 209,
+     "y": 130,
+     "base": 143
+    },
+    {
+     "id": "doorframe",
+     "x": 160,
+     "y": 140,
+     "base": 141,
+     "hit": [
+      160,
+      140,
+      64,
+      8
+     ],
+     "use": "dialogue:doorframe"
+    },
+    {
+     "id": "dwellbed",
+     "sprite": "cot",
+     "x": 144,
+     "y": 56,
+     "base": 80,
+     "solid": [
+      [
+       9,
+       4,
+       3,
+       1
+      ]
+     ],
+     "hit": [
+      144,
+      56,
+      48,
+      24
+     ],
+     "use": "dialogue:dwellbed"
+    },
+    {
+     "id": "seenrecord",
+     "sprite": "record",
+     "x": 196,
+     "y": 70,
+     "base": 81,
+     "solid": [
+      [
+       12,
+       4,
+       1,
+       1
+      ]
+     ],
+     "hit": [
+      192,
+      66,
+      20,
+      20
+     ],
+     "use": "dialogue:seenrecord"
+    },
+    {
+     "sprite": "box",
+     "x": 224,
+     "y": 98,
+     "base": 112,
+     "solid": [
+      [
+       14,
+       6,
+       1,
+       1
+      ]
+     ]
+    },
+    {
+     "id": "lastrecord",
+     "sprite": "record",
+     "x": 224,
+     "y": 88,
+     "base": 113,
+     "hit": [
+      220,
+      84,
+      20,
+      26
+     ],
+     "use": "dialogue:lastrecord"
+    },
+    {
+     "sprite": "plant",
+     "x": 145,
+     "y": 94,
+     "base": 112,
+     "solid": [
+      [
+       9,
+       6,
+       1,
+       1
+      ]
+     ]
+    }
+   ]
   }
  ]
 }

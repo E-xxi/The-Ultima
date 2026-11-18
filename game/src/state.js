@@ -7,7 +7,7 @@ export const MEMO_MAX = 60;
 export const GUESS_MAX = 10;   // 글자 하나에 붙이는 추측 낱말 길이
 
 // 조건 문자열에 쓰는 종류 → 상태 필드
-export const KINDS = {event:'events', read:'read', seen:'seen', solved:'solved', visited:'visited'};
+export const KINDS = {event:'events', read:'read', seen:'seen', solved:'solved', visited:'visited', verified:'verified'};
 
 export function newState(start) {
   return {
@@ -22,14 +22,18 @@ export function newState(start) {
     discovered: {},       // 본 적 있는 글자 ('s:grass', 'm:nu')
     answers: {},          // 플레이어가 낸 보고서 문장
     guesses: {},          // 플레이어가 글자마다 적은 추측 ('s:tree' → '나무?'). 정답과 따로 둔다
+    pairs: {},            // 기록별로 플레이어가 지은 대조 짝 ({rec1: {'0:1': [2, 3]}})
+    verified: {},         // 대조를 마친(짝이 모두 맞은) 기록
+    decipher: {known: [], rules: []},   // 해독 진행: 알아낸 기록문자 글자(소리 id)와 발견한 규칙 문장. 정답(stage0.json)과 따로 둔다
     notebook: {cur: 0, pages: Array.from({length: PAGES}, () => ({g: [], t: ''}))},
   };
 }
 
-// 조건: 'event:kit_given', '!solved:practice', 또는 그 배열(모두 참이어야 함). 비어 있으면 참.
+// 조건: 'event:kit_given', '!solved:practice', 그 배열(모두 참), 또는 {atleast: N, of: [...]}(N개 이상 참). 비어 있으면 참.
 export function check(state, cond) {
   if (!cond) return true;
   if (Array.isArray(cond)) return cond.every(c => check(state, c));
+  if (typeof cond === 'object') return cond.of.filter(c => check(state, c)).length >= cond.atleast;
   const neg = cond.startsWith('!'), [kind, id] = (neg ? cond.slice(1) : cond).split(':');
   const field = KINDS[kind];
   if (!field) throw new Error('알 수 없는 조건: ' + cond);
@@ -60,5 +64,8 @@ export function setGuess(state, key, text) {
   const t = String(text).trim().slice(0, GUESS_MAX);
   if (t) state.guesses[key] = t; else delete state.guesses[key];
 }
+// 대조 짝 (플레이어의 가설). 판정은 compare.js
+export function setPair(state, recId, key, range) { (state.pairs[recId] = state.pairs[recId] || {})[key] = range; }
+export function clearPair(state, recId, key) { if (state.pairs[recId]) delete state.pairs[recId][key]; }
 export function turnPage(state, delta) { goToPage(state, state.notebook.cur + delta); }
 export function goToPage(state, n) { state.notebook.cur = Math.max(0, Math.min(PAGES - 1, n)); }

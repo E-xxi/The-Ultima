@@ -34,7 +34,117 @@
    "max_length": 80,
    "on_solve": [
     "event:report1_sent",
-    "chapter_end:1"
+    "chapter:2",
+    "say:after_report1"
+   ]
+  },
+  {
+   "id": "study0",
+   "type": "stage0_practice",
+   "requires": [],
+   "on_solve": [
+    "event:study_done",
+    "card:study_days",
+    "open_read:study_cert"
+   ]
+  },
+  {
+   "id": "p2_reverse",
+   "type": "placeholder",
+   "requires": [],
+   "on_solve": []
+  },
+  {
+   "id": "p3_order",
+   "type": "placeholder",
+   "requires": [
+    "event:stage2_done"
+   ],
+   "on_solve": []
+  },
+  {
+   "id": "p3_evidence",
+   "type": "placeholder",
+   "requires": [
+    "solved:p3_order"
+   ],
+   "on_solve": []
+  },
+  {
+   "id": "p4_frame",
+   "type": "placeholder",
+   "requires": [
+    "event:stage3_done"
+   ],
+   "on_solve": []
+  },
+  {
+   "id": "p4_seen",
+   "type": "placeholder",
+   "requires": [
+    "event:stage3_done"
+   ],
+   "on_solve": []
+  },
+  {
+   "id": "p4_last",
+   "type": "placeholder",
+   "requires": [
+    "event:stage3_done"
+   ],
+   "on_solve": []
+  },
+  {
+   "id": "p5_final",
+   "type": "placeholder",
+   "requires": [
+    "event:stage4_done"
+   ],
+   "on_solve": []
+  },
+  {
+   "id": "hypothesis0",
+   "type": "free_text_report",
+   "requires": [
+    "event:applied",
+    {
+     "atleast": 3,
+     "of": [
+      "read:mat_timeline",
+      "read:mat_sat",
+      "read:mat_catalog",
+      "read:mat_manual",
+      "read:mat_preserve"
+     ]
+    }
+   ],
+   "max_length": 80,
+   "on_solve": [
+    "event:hypothesis0",
+    "card:weeks_later",
+    "event:approved",
+    "open_read:approval"
+   ]
+  },
+  {
+   "id": "report2",
+   "type": "free_text_report",
+   "requires": [
+    "solved:p3_evidence",
+    "read:reply_carbon"
+   ],
+   "max_length": 80,
+   "on_solve": []
+  },
+  {
+   "id": "report_final",
+   "type": "free_text_report",
+   "requires": [
+    "solved:p5_final"
+   ],
+   "max_length": 80,
+   "on_solve": [
+    "say:ending"
    ]
   }
  ]

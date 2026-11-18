@@ -1,0 +1,31 @@
+{
+ "about": "범용 기록문자의 시대별 사용 범위와 특수 발화 기호. 글자 모양은 graphemes.json, 소리(IPA·발음 특성)는 phonemes.json에 있다(원본: 0-1_game_script/). 소리만 다루고 뜻은 다루지 않는다(뜻은 language.json).",
+ "status": "draft",
+ "templates": ["V", "CV", "VC", "CVC", "CCV", "CCVC", "CCCV"],
+ "eras": [
+  {"id": "pre_migration", "label": "이주 이전 (개발 당시)", "templates": ["V", "CV", "VC", "CVC", "CCV", "CCVC", "CCCV"], "marks": ["voiced", "aspirated", "ejective", "labialized", "palatalized", "nasal", "long"]},
+  {"id": "lhs", "label": "LHS (주인공이 배운 표기)", "draft": true, "templates": ["V", "CV", "VC", "CVC"], "marks": ["voiced", "aspirated", "labialized", "palatalized", "nasal", "long"]},
+  {"id": "earth", "label": "지구 (남은 공동체)", "draft": true, "templates": ["V", "CV", "VC", "CVC", "CCV", "CCVC", "CCCV"], "marks": ["voiced", "aspirated", "ejective", "labialized", "palatalized", "nasal", "long"]}
+ ],
+ "examples": [
+  {"ipa": "dʑi", "template": "CV", "note": "지"},
+  {"ipa": "wʌn", "template": "CVC", "note": "원"},
+  {"ipa": "kʼãː", "template": "CV", "note": "지침 예시: 방출 자음 + 비음화 장모음"},
+  {"ipa": "tkʼa", "template": "CCV"},
+  {"ipa": "ktkʼa", "template": "CCCV"},
+  {"ipa": "kʷten", "template": "CCVC"}
+ ],
+ "utterance": {
+  "about": "특수 발화 표기법(주인공이 후반부에 고안). 휘파람 발화의 시간적·음향적 흔적을 적는다. 원본 음성이 없으면 실제 발음은 완벽히 복원할 수 없다. 처음부터 쓸 수 없고 unlock 조건이 맞아야 해금된다.",
+  "status": "draft",
+  "unlock": "event:whistle_notation",
+  "symbols": [
+   {"id": "rise", "temp": "↗", "label": "음높이 상승", "glyph": null},
+   {"id": "fall", "temp": "↘", "label": "음높이 하강", "glyph": null},
+   {"id": "level", "temp": "→", "label": "음높이 유지", "glyph": null},
+   {"id": "vary", "temp": "∿", "label": "음높이 반복 변동", "glyph": null},
+   {"id": "sustain", "temp": "—", "label": "소리 지속", "glyph": null},
+   {"id": "break", "temp": "‖", "label": "발화 단절", "glyph": null}
+  ]
+ }
+}

@@ -1,0 +1,506 @@
+{
+  "consonants": {
+    "p": {
+      "file": "consonants/p.svg",
+      "base": "labial",
+      "rotation": 0,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        8,
+        44
+      ],
+      "exit": [
+        42,
+        44
+      ]
+    },
+    "b": {
+      "file": "consonants/b.svg",
+      "base": "labial",
+      "rotation": 90,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        6,
+        42
+      ],
+      "exit": [
+        42,
+        25
+      ]
+    },
+    "pʰ": {
+      "file": "consonants/p_h.svg",
+      "base": "labial",
+      "rotation": 180,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        25,
+        42
+      ],
+      "exit": [
+        25,
+        42
+      ]
+    },
+    "pʼ": {
+      "file": "consonants/p_ej.svg",
+      "base": "labial",
+      "rotation": 270,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        8,
+        25
+      ],
+      "exit": [
+        44,
+        42
+      ]
+    },
+    "m": {
+      "file": "consonants/m.svg",
+      "base": "labial",
+      "rotation": 0,
+      "mark": "nasal",
+      "secondary": null,
+      "entry": [
+        8,
+        44
+      ],
+      "exit": [
+        42,
+        44
+      ]
+    },
+    "w": {
+      "file": "consonants/w.svg",
+      "base": "labial",
+      "rotation": 0,
+      "mark": "approximant",
+      "secondary": null,
+      "entry": [
+        8,
+        44
+      ],
+      "exit": [
+        42,
+        44
+      ]
+    },
+    "t": {
+      "file": "consonants/t.svg",
+      "base": "alveolar",
+      "rotation": 0,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        10,
+        44
+      ],
+      "exit": [
+        40,
+        44
+      ]
+    },
+    "d": {
+      "file": "consonants/d.svg",
+      "base": "alveolar",
+      "rotation": 90,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        6,
+        40
+      ],
+      "exit": [
+        42,
+        25
+      ]
+    },
+    "tʰ": {
+      "file": "consonants/t_h.svg",
+      "base": "alveolar",
+      "rotation": 180,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        25,
+        42
+      ],
+      "exit": [
+        25,
+        42
+      ]
+    },
+    "tʼ": {
+      "file": "consonants/t_ej.svg",
+      "base": "alveolar",
+      "rotation": 270,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        8,
+        25
+      ],
+      "exit": [
+        44,
+        40
+      ]
+    },
+    "n": {
+      "file": "consonants/n.svg",
+      "base": "alveolar",
+      "rotation": 0,
+      "mark": "nasal",
+      "secondary": null,
+      "entry": [
+        10,
+        44
+      ],
+      "exit": [
+        40,
+        44
+      ]
+    },
+    "s": {
+      "file": "consonants/s.svg",
+      "base": "alveolar",
+      "rotation": 0,
+      "mark": "fricative",
+      "secondary": null,
+      "entry": [
+        10,
+        44
+      ],
+      "exit": [
+        40,
+        44
+      ]
+    },
+    "z": {
+      "file": "consonants/z.svg",
+      "base": "alveolar",
+      "rotation": 90,
+      "mark": "fricative",
+      "secondary": null,
+      "entry": [
+        6,
+        40
+      ],
+      "exit": [
+        42,
+        25
+      ]
+    },
+    "tɕ": {
+      "file": "consonants/tc.svg",
+      "base": "palatal",
+      "rotation": 0,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        38,
+        44
+      ],
+      "exit": [
+        38,
+        44
+      ]
+    },
+    "dʑ": {
+      "file": "consonants/dz.svg",
+      "base": "palatal",
+      "rotation": 90,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        6,
+        38
+      ],
+      "exit": [
+        42,
+        28
+      ]
+    },
+    "j": {
+      "file": "consonants/j.svg",
+      "base": "palatal",
+      "rotation": 0,
+      "mark": "approximant",
+      "secondary": null,
+      "entry": [
+        38,
+        44
+      ],
+      "exit": [
+        38,
+        44
+      ]
+    },
+    "k": {
+      "file": "consonants/k.svg",
+      "base": "velar",
+      "rotation": 0,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        15,
+        44
+      ],
+      "exit": [
+        15,
+        44
+      ]
+    },
+    "g": {
+      "file": "consonants/g.svg",
+      "base": "velar",
+      "rotation": 90,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        30,
+        40
+      ],
+      "exit": [
+        30,
+        40
+      ]
+    },
+    "kʰ": {
+      "file": "consonants/k_h.svg",
+      "base": "velar",
+      "rotation": 180,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        10,
+        30
+      ],
+      "exit": [
+        35,
+        42
+      ]
+    },
+    "kʼ": {
+      "file": "consonants/k_ej.svg",
+      "base": "velar",
+      "rotation": 270,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        8,
+        35
+      ],
+      "exit": [
+        44,
+        35
+      ]
+    },
+    "ŋ": {
+      "file": "consonants/_.svg",
+      "base": "velar",
+      "rotation": 0,
+      "mark": "nasal",
+      "secondary": null,
+      "entry": [
+        15,
+        44
+      ],
+      "exit": [
+        15,
+        44
+      ]
+    },
+    "kʷ": {
+      "file": "consonants/k_w.svg",
+      "base": "velar",
+      "rotation": 0,
+      "mark": null,
+      "secondary": "labialized",
+      "entry": [
+        15,
+        44
+      ],
+      "exit": [
+        15,
+        44
+      ]
+    },
+    "tʲ": {
+      "file": "consonants/t_j.svg",
+      "base": "alveolar",
+      "rotation": 0,
+      "mark": null,
+      "secondary": "palatalized",
+      "entry": [
+        10,
+        44
+      ],
+      "exit": [
+        40,
+        44
+      ]
+    },
+    "q": {
+      "file": "consonants/q.svg",
+      "base": "uvular",
+      "rotation": 0,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        15,
+        44
+      ],
+      "exit": [
+        42,
+        35
+      ]
+    },
+    "qʼ": {
+      "file": "consonants/q_ej.svg",
+      "base": "uvular",
+      "rotation": 270,
+      "mark": null,
+      "secondary": null,
+      "entry": [
+        8,
+        35
+      ],
+      "exit": [
+        44,
+        35
+      ]
+    }
+  },
+  "vowels": {
+    "a": {
+      "file": "vowels/a.svg",
+      "ring": [
+        10,
+        10
+      ],
+      "exit": [
+        34,
+        44
+      ]
+    },
+    "e": {
+      "file": "vowels/e.svg",
+      "ring": [
+        6,
+        28
+      ],
+      "exit": [
+        40,
+        42
+      ]
+    },
+    "i": {
+      "file": "vowels/i.svg",
+      "ring": [
+        25,
+        8
+      ],
+      "exit": [
+        32,
+        44
+      ]
+    },
+    "o": {
+      "file": "vowels/o.svg",
+      "ring": [
+        10,
+        10
+      ],
+      "exit": [
+        40,
+        32
+      ]
+    },
+    "u": {
+      "file": "vowels/u.svg",
+      "ring": [
+        12,
+        8
+      ],
+      "exit": [
+        38,
+        44
+      ]
+    },
+    "ʌ": {
+      "file": "vowels/turned_v.svg",
+      "ring": [
+        8,
+        44
+      ],
+      "exit": [
+        42,
+        44
+      ]
+    },
+    "ã": {
+      "file": "vowels/a_nas.svg",
+      "ring": [
+        10,
+        10
+      ],
+      "exit": [
+        34,
+        44
+      ]
+    },
+    "aː": {
+      "file": "vowels/a_long.svg",
+      "ring": [
+        10,
+        10
+      ],
+      "exit": [
+        34,
+        44
+      ]
+    },
+    "ãː": {
+      "file": "vowels/a_nas_long.svg",
+      "ring": [
+        10,
+        10
+      ],
+      "exit": [
+        34,
+        44
+      ]
+    }
+  },
+  "syllables": {
+    "dʑi": {
+      "file": "syllables/dzi.svg",
+      "label": "지"
+    },
+    "wʌn": {
+      "file": "syllables/wturned_vn.svg",
+      "label": "원"
+    },
+    "kʼãː": {
+      "file": "syllables/k_eja_nas_long.svg",
+      "label": "지침 예시"
+    },
+    "tkʼa": {
+      "file": "syllables/tk_eja.svg",
+      "label": "CCV 구조"
+    },
+    "ktkʼa": {
+      "file": "syllables/ktk_eja.svg",
+      "label": "CCCV 구조"
+    },
+    "kʷten": {
+      "file": "syllables/k_wten.svg",
+      "label": "CCVC 구조"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": "stage0",
+  "title": "스테이지 0 · 출발 전 연습",
+  "note": "표기 규칙(graphemes.json)과 분리된 스테이지 데이터. 단어는 실제 발음 기준으로 적는다 (예: 감자의 ㅈ은 울림소리 사이라 /dʑ/).",
+  "knownAtStart": ["a"],
+  "letters": {
+    "a":  { "hangul": "ㅏ", "ipa": "a" },
+    "m":  { "hangul": "ㅁ", "ipa": "m" },
+    "ŋ":  { "hangul": "ㅇ", "ipa": "ŋ", "hint": "받침" },
+    "dʑ": { "hangul": "ㅈ", "ipa": "dʑ", "hint": "울림소리 사이" },
+    "s":  { "hangul": "ㅅ", "ipa": "s" },
+    "n":  { "hangul": "ㄴ", "ipa": "n" },
+    "u":  { "hangul": "ㅜ", "ipa": "u" },
+    "k":  { "hangul": "ㄱ", "ipa": "k", "hint": "첫소리" }
+  },
+  "notebookOrder": ["a", "u", "k", "n", "m", "ŋ", "s", "dʑ"],
+  "words": {
+    "감자": [{ "onset": ["k"], "nucleus": "a", "coda": ["m"] }, { "onset": ["dʑ"], "nucleus": "a", "coda": [] }],
+    "강자": [{ "onset": ["k"], "nucleus": "a", "coda": ["ŋ"] }, { "onset": ["dʑ"], "nucleus": "a", "coda": [] }],
+    "감사": [{ "onset": ["k"], "nucleus": "a", "coda": ["m"] }, { "onset": ["s"],  "nucleus": "a", "coda": [] }],
+    "간사": [{ "onset": ["k"], "nucleus": "a", "coda": ["n"] }, { "onset": ["s"],  "nucleus": "a", "coda": [] }],
+    "감수": [{ "onset": ["k"], "nucleus": "a", "coda": ["m"] }, { "onset": ["s"],  "nucleus": "u", "coda": [] }],
+    "남자": [{ "onset": ["n"], "nucleus": "a", "coda": ["m"] }, { "onset": ["dʑ"], "nucleus": "a", "coda": [] }],
+    "강사": [{ "onset": ["k"], "nucleus": "a", "coda": ["ŋ"] }, { "onset": ["s"],  "nucleus": "a", "coda": [] }],
+    "강수": [{ "onset": ["k"], "nucleus": "a", "coda": ["ŋ"] }, { "onset": ["s"],  "nucleus": "u", "coda": [] }],
+    "간수": [{ "onset": ["k"], "nucleus": "a", "coda": ["n"] }, { "onset": ["s"],  "nucleus": "u", "coda": [] }],
+    "산수": [{ "onset": ["s"], "nucleus": "a", "coda": ["n"] }, { "onset": ["s"],  "nucleus": "u", "coda": [] }],
+    "상수": [{ "onset": ["s"], "nucleus": "a", "coda": ["ŋ"] }, { "onset": ["s"],  "nucleus": "u", "coda": [] }],
+    "상자": [{ "onset": ["s"], "nucleus": "a", "coda": ["ŋ"] }, { "onset": ["dʑ"], "nucleus": "a", "coda": [] }],
+    "남산": [{ "onset": ["n"], "nucleus": "a", "coda": ["m"] }, { "onset": ["s"],  "nucleus": "a", "coda": ["n"] }]
+  },
+  "compare": [
+    {
+      "a": "감자", "b": "강자", "reveal": ["m", "ŋ"],
+      "explain": "받침은 블록 오른쪽 아래에 작은 꼴로 붙습니다. 두 글자 모두 끝에 점이 있죠. 점은 '코로 내는 소리'라는 뜻입니다. 기본 획은 다릅니다. ㅁ은 입술에서 나니 꺾쇠, ㅇ은 목 안쪽에서 나니 고리 달린 기둥이에요."
+    },
+    {
+      "a": "감자", "b": "감사", "reveal": ["dʑ", "s"],
+      "explain": "둘째 음절의 첫소리입니다. ㅅ은 아치 옆에 짧은 평행 획이 붙어요. 바람이 새는 소리(마찰음) 표시입니다. ㅈ은 갈고리가 옆으로 누워 있습니다. 감자의 ㅈ은 울림소리 사이에서 /dʑ/로 울리기 때문에, 글자가 '유성' 방향(90°)으로 돌아간 거예요."
+    },
+    {
+      "a": "감사", "b": "간사", "reveal": ["n"],
+      "explain": "ㄴ 받침은 아치에 점입니다. ㅁ 받침과 점은 같고 기본 획만 다르죠. 기본 획은 소리 나는 위치(입술이냐 잇몸이냐)를, 점은 소리 내는 방법을 알려 줍니다."
+    },
+    {
+      "a": "감사", "b": "감수", "reveal": ["u"],
+      "explain": "모음은 언제나 작은 고리에서 시작합니다. 자음에는 고리가 없어요. ㅜ는 라틴 문자 u를 따라 그린 모양입니다."
+    },
+    {
+      "a": "감자", "b": "남자", "reveal": ["k", "n"],
+      "explain": "첫소리 ㄱ은 고리 달린 기둥, ㄴ은 아치에 점입니다. 앞에서 본 ㄴ 받침과 같은 글자예요. 첫소리에서는 크게, 받침에서는 작게 적힐 뿐입니다."
+    }
+  ],
+  "read": [
+    { "word": "강사", "options": ["감사", "강사", "간사", "강자"] },
+    { "word": "상자", "options": ["강자", "감자", "상자", "남자"] },
+    { "word": "간수", "options": ["감수", "강수", "간수", "산수"] },
+    { "word": "상수", "options": ["산수", "상수", "간수", "감수"] },
+    { "word": "남산", "options": ["남자", "감사", "간사", "남산"] }
+  ],
+  "write": ["강수", "상자", "남산"]
+}

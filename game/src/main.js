@@ -1,6 +1,8 @@
 // 게임을 잇는 곳: 데이터 불러오기·검증 → 저장 읽기 → 입력·이동·효과 실행·자동 저장 → 그리기.
 import {loadData, validateData, validateDevStarts} from './data.js';
 import {createLanguage} from './language.js';
+import {createScript as createRenderer} from './scriptRenderer.js';
+import * as stage0 from './stage0.js';
 import {createArt} from './art.js';
 import {buildMap, nearest, step} from './world.js';
 import {renderWorld, renderInspect, glyphAt} from './render.js';
@@ -13,7 +15,7 @@ import * as ui from './ui.js';
 export const GAME_VERSION = '0.1.0';
 
 const $ = ui.$, cv = $('game'), ctx = cv.getContext('2d');
-let D, lang, art, maps, state, M, storage, dialogue;
+let D, lang, renderer, art, maps, state, M, storage, dialogue;
 const player = {x: 0, y: 0, dir: 'down', frame: 0, walk: 0};
 const held = new Set();
 let insp = null, frame = null, bookOpen = false, overlay = null, fade = null, time = 0, last = 0;
@@ -42,6 +44,7 @@ const host = {
   },
   openRead: id => openDoc(id),
   openPuzzle: id => openPuzzle(id),
+  say: id => talk(id),
   chapterEnd: n => {
     const txt = D.story.ui.chapter_end[n];
     setOverlay('end'); ui.renderChapterEnd(txt, state.answers[txt.answer_of], newGame);
@@ -129,9 +132,23 @@ function openPuzzle(id) {
       () => { const eff = solve(p, state); if (eff) run(eff); },
       // 닫을 때, 풀었으면 뒤이어 나오는 대사(after)를 꺼낸다
       () => { setOverlay(null); if (p.after && state.solved[p.id]) talk(p.after); });
+  } else if (p.type === 'stage0_practice') {
+    setOverlay('practice');
+    const dc = state.decipher;
+    ui.openStage0(D.stage0, D.phonemes, renderer, D.story.ui[p.id], dc, stage0, {
+      learn: (ids, rule) => { const fresh = stage0.learn(dc, ids, rule); saveSoon(); return fresh; },
+      reset: () => { stage0.resetProgress(dc, D.stage0); saveSoon(); },
+      finish: () => { const eff = solve(p, state); setOverlay(null); if (eff) run(eff); },
+      close: () => setOverlay(null),
+    });
+  } else if (p.type === 'placeholder') {
+    setOverlay('practice');
+    ui.openPlaceholder(D.story.ui[p.id], done,
+      () => { const eff = solve(p, state); setOverlay(null); if (eff) run(eff); },
+      () => setOverlay(null));
   } else if (p.type === 'free_text_report' && !done) {
     setOverlay('report');
-    ui.openReport(p, art.surfaces[p.record], art, D.story.ui[p.id],
+    ui.openReport(p, p.record ? art.surfaces[p.record] : null, art, D.story.ui[p.id],
       text => { const eff = solve(p, state, text); if (eff) { setOverlay(null); run(eff); } },
       () => setOverlay(null));
   }
@@ -340,6 +357,8 @@ function fatal(msg) { const el = $('fatal'); el.hidden = false; el.textContent =
 async function boot(hot) {
   try { D = await loadData(); } catch (e) { fatal(e.message); return; }
   lang = createLanguage(D.language);
+  // 화면의 자음 색은 서류 글자색을 따른다(원본 데이터는 그대로 두고 복사본만 바꾼다)
+  renderer = createRenderer({...D.graphemes, style: {...D.graphemes.style, consonantInk: 'currentColor'}}, D.phonemes);
   art = createArt(lang, D.records);
   const errs = validateData(D, {sprites: art.SPRITE_NAMES, photos: art.PHOTOS});
   if (errs.length) { console.error(errs); fatal(errs.join('\n')); return; }

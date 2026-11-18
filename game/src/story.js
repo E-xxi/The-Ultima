@@ -8,13 +8,13 @@ export function pickVariant(variants, state) {
 }
 
 // 효과 문자열 한 줄: '종류:값'
-export const EFFECT_KINDS = ['event', 'chapter', 'goto', 'card', 'open_read', 'open_puzzle', 'chapter_end'];
+export const EFFECT_KINDS = ['event', 'chapter', 'goto', 'card', 'open_read', 'open_puzzle', 'chapter_end', 'say'];
 export function parseEffect(e) {
   const i = e.indexOf(':');
   return i < 0 ? [e, ''] : [e.slice(0, i), e.slice(i + 1)];
 }
 
-// host: {goto(map, spawn), card(id), openRead(id), openPuzzle(id), chapterEnd(n)}
+// host: {goto(map, spawn), card(id), openRead(id), openPuzzle(id), chapterEnd(n), say(dialogueId)}
 export function runEffects(effects, state, host) {
   for (const e of effects || []) {
     const [kind, arg] = parseEffect(e);
@@ -26,6 +26,7 @@ export function runEffects(effects, state, host) {
       case 'open_read': host.openRead(arg); break;
       case 'open_puzzle': host.openPuzzle(arg); break;
       case 'chapter_end': host.chapterEnd(arg); break;
+      case 'say': host.say(arg); break;
       default: throw new Error('알 수 없는 효과: ' + e);
     }
   }

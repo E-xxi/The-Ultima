@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE Ultima 스테이지 0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 조용한 연구실의 연습 노트, 발견하는 즐거움
+   IDEA: 출발 전 연구자의 비교 노트 — 두 기록을 나란히 놓고 차이를 짚는다
+   PICTURE: 크게 그린 기록문자 단어 카드, 위에는 기록문자 띠
+   COLOUR and TYPE: 종이 흰색 + 먹색 자음, 호박색 모음(문자 자체의 색), 청록 UI 강조 · IBM Plex Sans KR
+   LAYOUT: 상단 진행 띠, 가운데 작업판, 오른쪽 해독 노트(좁으면 아래로) */
+:root{color-scheme:light dark;--bg:light-dark(#F7F6F1,#131614);--ink:light-dark(#1F2421,#E8E6DF);--mut:light-dark(#646A65,#A0A59F);--line:light-dark(#DDDBD2,#2C322E);--card:light-dark(#FFFFFF,#1B1F1D);--teal:light-dark(#0F5C55,#62C7B9);--teal-t:light-dark(#DDEFEA,#16332F);--amber:light-dark(#9A5F0E,#E0A24A);--bad:light-dark(#B3261E,#F28B82);--bad-t:light-dark(#FBE4E1,#3B201E)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;overflow-x:clip;word-break:keep-all}
+button{font:inherit;color:inherit}
+.top{border-bottom:1px solid var(--line);padding:18px max(4vw,16px) 14px;position:relative;overflow:hidden}
+.frieze{position:absolute;inset:6px 0 auto 0;height:64px;color:var(--teal);opacity:.13;pointer-events:none;white-space:nowrap}
+.frieze svg{height:64px;width:auto}
+.top h1{position:relative;font-size:clamp(24px,3.4vw,34px);line-height:1.1;margin:22px 0 4px;font-weight:600;text-wrap:balance}
+.top p{position:relative;margin:0;color:var(--mut);font-size:14px}
+.steps{position:relative;display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut);padding:4px 10px;border:1px solid var(--line);border-radius:99px;background:var(--card)}
+.step.on{color:var(--teal);border-color:var(--teal)}
+.step.done{color:var(--ink)}
+.pips{display:flex;gap:3px}.pip{width:7px;height:7px;border-radius:50%;background:var(--line)}.pip.f{background:var(--teal)}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;padding:24px max(4vw,16px) 48px;max-width:1240px;margin:0 auto}
+@media(max-width:860px){.wrap{grid-template-columns:minmax(0,1fr)}}
+.task{font-size:clamp(19px,2.2vw,23px);font-weight:600;margin:0 0 4px;line-height:1.3;text-wrap:balance}
+.sub{color:var(--mut);margin:0 0 18px;font-size:15px}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media(max-width:600px){.pair{grid-template-columns:minmax(0,1fr)}}
+.wcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px 10px;display:flex;flex-direction:column;align-items:center}
+.wcard .kr{font-size:15px;color:var(--mut);align-self:flex-start;letter-spacing:.02em}
+.glyphs{color:var(--ink);display:flex;justify-content:center;width:100%;padding:6px 0}
+.glyphs svg{max-width:100%;height:auto;overflow:visible}
+.solo .glyphs svg{max-width:min(100%,520px)}
+.part .hit{transition:fill .2s,stroke .2s;vector-effect:non-scaling-stroke}
+.clickable .part{cursor:pointer}
+.clickable .part:hover .hit{fill:var(--teal-t)}
+.part.hl .hit{fill:var(--teal-t);stroke:var(--teal);stroke-width:1.5}
+.lbl{fill:var(--teal);font-weight:600;font-family:inherit}
+.pair .glyphs{padding-bottom:16px}
+.part.bad .hit{fill:var(--bad-t);stroke:var(--bad);stroke-width:1.5}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.fb{min-height:28px;margin:14px 0 0;font-size:15px}
+.fb.no{color:var(--bad)}.fb.ok{color:var(--teal)}
+.reveal{margin-top:16px;border:1px solid var(--teal);border-radius:12px;background:var(--card);padding:16px}
+.rgl{display:flex;flex-wrap:wrap;gap:18px;margin-bottom:10px}
+.rg{display:flex;align-items:center;gap:10px}
+.rg .g{color:var(--ink);width:64px}.rg .g svg{width:64px;height:auto;overflow:visible}
+.rg b{font-size:26px;font-weight:600}.rg span{color:var(--mut);font-size:14px;display:block}
+.reveal p{margin:0;max-width:66ch}
+.btn{min-height:44px;padding:0 20px;border-radius:10px;border:1px solid var(--teal);background:var(--teal);color:light-dark(#fff,#0E1A18);font-weight:600;cursor:pointer;margin-top:16px}
+.btn.ghost{background:transparent;color:var(--teal)}
+.btn:focus-visible,.opt:focus-visible,.slot:focus-visible,.chip:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.opts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}
+@media(max-width:600px){.opts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.opt{min-height:56px;font-size:20px;border-radius:10px;border:1px solid var(--line);background:var(--card);cursor:pointer}
+.opt:hover{border-color:var(--teal)}
+.opt.no{border-color:var(--bad);color:var(--bad);background:var(--bad-t)}
+.opt.yes{border-color:var(--teal);color:var(--teal);background:var(--teal-t)}
+.compose{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:6px}
+.syl{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+.syl h3{margin:0 0 8px;font-size:13px;color:var(--mut);font-weight:400}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.slot{min-height:76px;border:1.5px dashed var(--line);border-radius:10px;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;color:var(--mut);padding:4px}
+.slot svg{width:40px;height:auto;overflow:visible}
+.slot.sel{border-color:var(--teal);border-style:solid;background:var(--teal-t)}
+.slot.bad{border-color:var(--bad);border-style:solid;background:var(--bad-t)}
+.slot .gg{color:var(--ink)}
+.palette{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{width:64px;height:64px;border:1px solid var(--line);border-radius:10px;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:12px}
+.chip:hover{border-color:var(--teal)}
+.chip svg{width:44px;height:auto;overflow:visible}
+.preview{margin-top:14px}
+.note{align-self:start;position:sticky;top:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+@media(max-width:860px){.note{position:static}}
+.note h2{font-size:16px;margin:0 0 2px;font-weight:600}
+.note .cnt{color:var(--mut);font-size:13px;margin:0 0 10px}
+.ngrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.ncell{border:1px solid var(--line);border-radius:8px;padding:6px 2px 4px;text-align:center;font-size:13px}
+.ncell .g{color:var(--ink);height:44px;display:flex;align-items:center;justify-content:center}
+.ncell svg{width:40px;height:auto;overflow:visible}
+.ncell.lock{border-style:dashed;color:var(--mut)}
+.ncell.lock .g{font-size:20px}
+.ncell.new{animation:pop .9s}
+@keyframes pop{0%{background:var(--teal-t);transform:scale(1.08)}100%{background:transparent;transform:none}}
+.note .rules{margin:12px 0 0;padding:10px 0 0 18px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+.note .rules li{margin-bottom:4px}
+.book{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:clamp(20px,4vw,44px);max-width:780px}
+.rh{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--mut);border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:26px}
+.kick{margin:0;color:var(--teal);font-weight:600;font-size:15px}
+.lesson{font-size:clamp(28px,3.6vw,38px);line-height:1.1;margin:2px 0 10px;font-weight:600}
+.lead{font-size:17px;color:var(--mut);margin:0 0 20px}
+.goal{background:var(--teal-t);border:1px solid var(--teal);border-radius:8px;padding:12px 16px;margin-bottom:8px}
+.goal ul{margin:6px 0 0;padding-left:20px}.goal li{margin-bottom:2px}
+.book h3{color:var(--teal);font-size:18px;margin:28px 0 6px;font-weight:600}
+.book p{max-width:66ch}
+.caution{border:1px dashed var(--line);border-radius:8px;padding:10px 14px;font-size:15px}
+.caution b{color:var(--teal);margin-right:6px}
+.f0{margin:16px 0 4px;border:1px solid var(--line);border-radius:8px;padding:10px}
+.f0 svg{width:100%;height:auto;display:block;color:var(--ink);overflow:visible}
+.f0 figcaption,.known caption{font-size:13px;color:var(--mut);text-align:left;padding-top:6px;caption-side:bottom}
+.an{font-size:15px;font-weight:600;fill:var(--teal);text-anchor:middle;font-family:inherit}
+.ad{font-size:12.5px;fill:var(--mut);text-anchor:middle;font-family:inherit}
+.ld{stroke:var(--teal);stroke-width:1;stroke-dasharray:3 3}
+.br{fill:none;stroke:var(--teal);stroke-width:1.2}
+.known{border-collapse:collapse;margin:14px 0 4px;min-width:min(100%,360px)}
+.known th,.known td{border-bottom:1px solid var(--line);padding:6px 14px 6px 0;text-align:left;font-size:15px}
+.known th{font-size:13px;color:var(--mut);font-weight:400}
+.kg{color:var(--ink);width:56px}.kg svg{width:40px;height:auto;display:block;overflow:visible}
+.end{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px}
+.intro{max-width:62ch}
+.intro p{margin:0 0 12px}
+.lex{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px}
+.lex .wcard{padding:8px 10px}
+.small{font-size:13px;color:var(--mut)}
+@media(prefers-reduced-motion:reduce){.shake,.ncell.new{animation:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="frieze" id="frieze" aria-hidden="true"></div>
+  <h1>스테이지 0 · 출발 전 연습</h1>
+  <p>기록문자로 적힌 익숙한 단어를 비교해, 어떤 소리가 어디에 어떤 모양으로 적히는지 알아냅니다.</p>
+  <div class="steps" id="steps"></div>
+</header>
+<div class="wrap">
+  <main id="stage" aria-live="polite"></main>
+  <aside class="note" aria-label="해독 노트">
+    <h2>해독 노트</h2>
+    <p class="cnt" id="cnt"></p>
+    <div class="ngrid" id="ngrid"></div>
+    <ul class="rules" id="rules"></ul>
+  </aside>
+</div>
+<script>
+/*__RENDERER__*/
+/*__DATA__*/
+{
+  G.style.consonantInk = 'currentColor';
+  const script = createScript(G, P);
+  const W = S.words, LT = S.letters;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const SLOT = { onset0: '첫소리', nucleus: '모음', coda0: '받침' };
+  const PHASES = [
+    { id: 'compare', name: '비교', n: S.compare.length },
+    { id: 'read', name: '읽기', n: S.read.length },
+    { id: 'write', name: '쓰기', n: S.write.length },
+  ];
+  const st = { phase: 'intro', i: 0, known: new Set(S.knownAtStart), fresh: new Set(), rules: [], solved: false, comp: null, sel: null };
+
+  const isVowel = (id) => P.vowels.some((v) => v.id === id);
+  const glyph = (id, scale = 1) => (isVowel(id) ? script.renderVowel(id, { scale }) : script.renderConsonant(id, { scale }));
+  const word = (name, scale = 1.5) => script.renderWord(W[name], { scale });
+
+  function partsOf(syls) {
+    const out = new Map();
+    syls.forEach((s, si) => {
+      (s.onset || []).forEach((p, i) => out.set(`${si}:onset${i}`, p));
+      out.set(`${si}:nucleus`, s.nucleus);
+      (s.coda || []).forEach((p, i) => out.set(`${si}:coda${i}`, p));
+    });
+    return out;
+  }
+  function diffKeys(a, b) {
+    const A = partsOf(a), B = partsOf(b);
+    return [...new Set([...A.keys(), ...B.keys()])].filter((k) => A.get(k) !== B.get(k));
+  }
+  const keyOf = (g) => `${g.dataset.syl}:${g.dataset.slot}`;
+  const slotName = (k) => SLOT[k.split(':')[1]] || k;
+  const sylName = (k) => `${+k.split(':')[0] + 1}음절`;
+
+  // ---------- 공통 UI ----------
+  function drawFrieze() {
+    const syls = ['감자', '강수', '남산', '상자', '간사', '감수', '산수', '강자', '남자'].flatMap((w) => W[w]);
+    $('#frieze').innerHTML = script.renderWord(syls, { scale: 0.9 }) + script.renderWord(syls, { scale: 0.9 });
+  }
+  function drawSteps() {
+    const idx = PHASES.findIndex((p) => p.id === st.phase);
+    $('#steps').innerHTML = PHASES.map((p, i) => {
+      const cls = i === idx ? 'on' : i < idx || st.phase === 'done' ? 'done' : '';
+      const filled = i < idx || st.phase === 'done' ? p.n : i === idx ? st.i + (st.solved ? 1 : 0) : 0;
+      const pips = Array.from({ length: p.n }, (_, j) => `<i class="pip${j < filled ? ' f' : ''}"></i>`).join('');
+      return `<span class="step ${cls}">${p.name}<span class="pips">${pips}</span></span>`;
+    }).join('');
+  }
+  function drawNote() {
+    $('#cnt').textContent = `해독한 글자 ${st.known.size} / ${S.notebookOrder.length}`;
+    $('#ngrid').innerHTML = S.notebookOrder.map((id) => {
+      if (!st.known.has(id)) return `<div class="ncell lock"><div class="g">?</div>미해독</div>`;
+      const L = LT[id];
+      return `<div class="ncell${st.fresh.has(id) ? ' new' : ''}"><div class="g">${glyph(id)}</div>${L.hangul} /${L.ipa}/</div>`;
+    }).join('');
+    st.fresh.clear();
+    $('#rules').innerHTML = st.rules.map((r) => `<li>${r}</li>`).join('') || '<li>비교를 통해 규칙을 발견하면 여기에 적힙니다.</li>';
+  }
+  function learn(ids, rule) {
+    ids.forEach((id) => { if (!st.known.has(id)) { st.known.add(id); st.fresh.add(id); } });
+    if (rule && !st.rules.includes(rule)) st.rules.push(rule);
+    drawNote();
+  }
+  function go(phase, i = 0) {
+    st.phase = phase; st.i = i; st.solved = false;
+    drawSteps();
+    ({ intro, compare, read, write, done })[phase]();
+    $('#stage').focus?.();
+  }
+  function next() {
+    const p = PHASES.find((x) => x.id === st.phase);
+    if (st.i + 1 < p.n) return go(st.phase, st.i + 1);
+    const idx = PHASES.indexOf(p);
+    go(idx + 1 < PHASES.length ? PHASES[idx + 1].id : 'done');
+  }
+
+  // ---------- 화면들 ----------
+  function intro() {
+    const known = [...st.known].map((id) => `<tr><td class="kg">${glyph(id, 0.9)}</td><td>${LT[id].hangul}</td><td>/${LT[id].ipa}/</td><td>모음</td></tr>`).join('');
+    $('#stage').innerHTML = `<article class="book">
+      <div class="rh"><span>범용 기록문자 입문</span><span>LHS 고고언어학 연구실 교재</span></div>
+      <p class="kick">제0과</p>
+      <h2 class="lesson">소리를 적는 글자</h2>
+      <p class="lead">서기 4100년. 지구로 떠나기 전, 연구자는 먼저 기록문자를 읽을 줄 알아야 한다.</p>
+      <div class="goal"><b>이 과에서 배울 것</b><ul>
+        <li>자음 글자와 모음 글자를 구별한다.</li>
+        <li>글자가 음절 블록의 어느 자리에, 어떤 크기로 놓이는지 안다.</li>
+        <li>한 소리만 다른 두 단어를 비교해 새 글자를 찾아낸다.</li></ul></div>
+      <h3>1. 범용 기록문자란</h3>
+      <p>범용 기록문자는 인류가 여러 언어의 발음을 기록하려고 만든 인공 표기 체계다. 그 자체로 하나의 언어가 아니라, 어떤 언어든 소리를 옮겨 적는 도구다.</p>
+      <p class="caution"><b>주의</b> 글자를 소리 내어 읽을 수 있다고 해서 그 언어를 이해하는 것은 아니다. 읽기와 해독은 다른 일이다.</p>
+      <h3>2. 음절 블록</h3>
+      <p>글자는 음절 하나를 한 덩어리로 묶어 왼쪽에서 오른쪽으로 적는다. 한 음절 안의 글자는 선으로 이어 쓰고, 음절과 음절 사이는 끊는다.</p>
+      <figure class="f0"><div id="f0"></div><figcaption>그림 0-1. ‘감자’의 기록. 검은 글자는 자음, 노란 글자는 모음이다.</figcaption></figure>
+      <h3>3. 비교로 읽기</h3>
+      <p>한 소리만 다른 두 단어를 나란히 놓으면, 달라진 글자가 곧 그 소리다. 이 과의 연습 기록은 익숙한 단어들로 되어 있다. 아는 단어에서 규칙을 찾아 두면, 처음 보는 언어에도 같은 방법을 쓸 수 있다.</p>
+      <table class="known"><caption>표 0-1. 지금까지 알려진 글자</caption>
+        <thead><tr><th>글자</th><th>한글</th><th>발음</th><th>종류</th></tr></thead><tbody>${known}</tbody></table>
+      <div class="end"><button class="btn" id="start">제0과 연습 시작</button><span class="small">비교 ${S.compare.length} · 읽기 ${S.read.length} · 쓰기 ${S.write.length}</span></div>
+    </article>`;
+    drawFigure();
+    $('#start').onclick = () => go('compare');
+  }
+
+  // 그림 0-1: 렌더러가 배치한 실제 좌표를 읽어 이름표를 단다
+  function drawFigure() {
+    const S2 = 2, OX = 70, OY = 96, VW = 700;
+    const wl = script.layoutWord(W['감자']);
+    const box = $('#f0');
+    box.innerHTML = `<svg viewBox="0 0 ${VW} 300" role="img" aria-label="감자의 기록문자와 각 부분 이름"><g transform="translate(${OX + (560 - wl.width * S2) / 2} ${OY}) scale(${S2})" class="fw">${wl.svg}</g><g id="ann"></g></svg>`;
+    const fw = $('.fw', box);
+    const base = OX + (560 - wl.width * S2) / 2;
+    const pos = (p) => {
+      const sx = +(p.parentNode.getAttribute('transform').match(/translate\(([-\d.]+)/)?.[1] || 0);
+      const m = p.getAttribute('transform').match(/translate\(([-\d.]+) ([-\d.]+)\)(?: scale\(([\d.]+)\))?/);
+      const x = sx + +m[1], y = +m[2], s = +(m[3] || 1);
+      return { cx: base + S2 * (x + 25 * s), top: OY + S2 * (y + 4 * s), bot: OY + S2 * (y + 48 * s), l: base + S2 * x, r: base + S2 * (x + 50 * s) };
+    };
+    const parts = $$('.part', fw);
+    const get = (syl, slot) => pos(parts.find((p) => p.dataset.syl == syl && p.dataset.slot === slot));
+    const callout = (q, name, desc) => `<line x1="${q.cx}" y1="${q.bot + 6}" x2="${q.cx}" y2="230" class="ld"/><text x="${q.cx}" y="250" class="an">${name}</text><text x="${q.cx}" y="270" class="ad">${desc}</text>`;
+    const s0 = [get(0, 'onset0'), get(0, 'nucleus'), get(0, 'coda0')], s1 = [get(1, 'onset0'), get(1, 'nucleus')];
+    const bracket = (a, b, t) => `<path d="M${a} 52V44H${b}V52" class="br"/><text x="${(a + b) / 2}" y="34" class="an">${t}</text>`;
+    const gapX = (s0[2].r + s1[0].l) / 2;
+    $('#ann', box).innerHTML =
+      bracket(s0[0].l, s0[2].r, '1음절 · 감') + bracket(s1[0].l, s1[1].r, '2음절 · 자') +
+      `<text x="${gapX}" y="78" class="ad">끊김</text>` +
+      callout(s0[0], '첫소리', '자음 · 고리 없음') + callout(s0[1], '모음', '고리에서 시작') + callout(s0[2], '받침', '작은 꼴');
+  }
+
+  function compare() {
+    const r = S.compare[st.i];
+    const diff = diffKeys(W[r.a], W[r.b]);
+    $('#stage').innerHTML = `<div class="pair">${[r.a, r.b].map((w) => `<div class="wcard"><div class="kr">${w}</div><div class="glyphs clickable">${word(w)}</div></div>`).join('')}</div>
+      <p class="fb" id="fb"></p><div id="rv"></div>`;
+    $$('.clickable').forEach((box) => box.addEventListener('click', (e) => {
+      const g = e.target.closest('.part');
+      if (!g || st.solved) return;
+      const k = keyOf(g);
+      if (diff.includes(k)) {
+        st.solved = true;
+        // 한쪽만 눌러도 두 단어의 달라진 글자가 함께 선택되고, 한글 이름표가 붙는다
+        $$('#stage .part').filter((p) => diff.includes(keyOf(p))).forEach((p) => {
+          p.classList.add('hl');
+          const s = +((p.getAttribute('transform') || '').match(/scale\(([\d.]+)\)/)?.[1] || 1);
+          const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          t.setAttribute('class', 'lbl');
+          t.setAttribute('x', 25);
+          t.setAttribute('y', 50 + 20 / s);
+          t.setAttribute('text-anchor', 'middle');
+          t.setAttribute('font-size', 17 / s);
+          t.textContent = LT[p.dataset.ph]?.hangul || '';
+          p.appendChild(t);
+        });
+        $('#fb').className = 'fb';
+        $('#fb').textContent = '';
+        const rv = r.reveal.map((id) => `<div class="rg"><div class="g">${glyph(id, 1)}</div><div><b>${LT[id].hangul}</b><span>/${LT[id].ipa}/${LT[id].hint ? ' · ' + LT[id].hint : ''}</span></div></div>`).join('');
+        $('#rv').innerHTML = `<div class="reveal"><div class="rgl">${rv}</div><p>${['첫째','둘째','셋째'][+k.split(':')[0]]} 음절의 ${slotName(k)}입니다.</p></div><button class="btn" id="nx">${st.i + 1 < S.compare.length ? '다음 비교' : '읽기 연습으로'}</button>`;
+        learn(r.reveal, RULES[st.i]);
+        drawSteps();
+        $('#nx').onclick = next; $('#nx').focus();
+      } else {
+        g.classList.add('bad');
+        box.classList.add('shake');
+        setTimeout(() => { g.classList.remove('bad'); box.classList.remove('shake'); }, 600);
+        $('#fb').className = 'fb no';
+        $('#fb').textContent = `${sylName(k)}의 ${slotName(k)}는 두 단어에서 같은 글자예요. 다른 자리를 찾아보세요.`;
+      }
+    }));
+  }
+  const RULES = [
+    '받침은 오른쪽 아래에 작게. 끝의 점은 비음.',
+    '평행 획은 마찰음. 회전한 글자는 울림소리(유성).',
+    '기본 획은 소리 나는 위치(입술·잇몸·목 안쪽).',
+    '모음은 모두 고리에서 시작한다.',
+    '같은 자음이 첫소리에선 크게, 받침에선 작게.',
+  ];
+
+  function read() {
+    const q = S.read[st.i];
+    $('#stage').innerHTML = `<p class="task">이 기록은 어떤 단어일까요?</p>
+      <p class="sub">해독 노트를 참고해 글자를 하나씩 읽어 보세요.</p>
+      <div class="wcard solo"><div class="glyphs" id="shown">${word(q.word, 1.8)}</div></div>
+      <div class="opts">${q.options.map((o) => `<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>
+      <p class="fb" id="fb"></p><div id="nxw"></div>`;
+    $$('.opt').forEach((b) => b.onclick = () => {
+      if (st.solved) return;
+      const o = b.dataset.o;
+      $$('#shown .part').forEach((p) => p.classList.remove('bad'));
+      if (o === q.word) {
+        st.solved = true;
+        b.classList.add('yes');
+        $('#fb').className = 'fb ok';
+        $('#fb').textContent = `정답, ${q.word}입니다.`;
+        $('#nxw').innerHTML = `<button class="btn" id="nx">${st.i + 1 < S.read.length ? '다음 기록' : '쓰기 연습으로'}</button>`;
+        drawSteps();
+        $('#nx').onclick = next; $('#nx').focus();
+      } else {
+        b.classList.add('no'); b.disabled = true;
+        const d = diffKeys(W[q.word], W[o]);
+        $$('#shown .part').forEach((p) => d.includes(keyOf(p)) && p.classList.add('bad'));
+        $('#fb').className = 'fb no';
+        $('#fb').textContent = `${o}(이)라면 표시한 자리(${d.map((k) => `${sylName(k)} ${slotName(k)}`).join(', ')})가 달라야 해요.`;
+      }
+    });
+  }
+
+  function write() {
+    const target = S.write[st.i];
+    const n = W[target].length;
+    st.comp = Array.from({ length: n }, () => ({ onset0: null, nucleus: null, coda0: null }));
+    st.sel = { s: 0, k: 'onset0' };
+    $('#stage').innerHTML = `<p class="task">‘${target}’을(를) 기록문자로 적어 보세요.</p>
+      <p class="sub">칸을 고른 뒤 아래에서 글자를 누르세요. 받침이 없으면 ‘없음’을 고릅니다.</p>
+      <div class="compose" id="compose"></div>
+      <div class="palette" id="pal"></div>
+      <div class="wcard preview"><div class="kr">미리 보기</div><div class="glyphs" id="pv"></div></div>
+      <button class="btn" id="chk">확인</button>
+      <p class="fb" id="fb"></p>`;
+    drawCompose(); drawPalette(); drawPreview();
+    $('#chk').onclick = () => {
+      if (st.solved) return next();
+      const want = W[target];
+      let ok = true;
+      $$('.slot').forEach((el) => el.classList.remove('bad'));
+      st.comp.forEach((c, si) => ['onset0', 'nucleus', 'coda0'].forEach((k) => {
+        const exp = k === 'nucleus' ? want[si].nucleus : k === 'onset0' ? want[si].onset[0] : (want[si].coda[0] || '');
+        if ((c[k] ?? null) !== exp) { ok = false; $(`.slot[data-s="${si}"][data-k="${k}"]`).classList.add('bad'); }
+      }));
+      if (ok) {
+        st.solved = true;
+        $('#fb').className = 'fb ok';
+        $('#fb').textContent = `완벽해요. ${target}의 기록입니다.`;
+        $('#chk').textContent = st.i + 1 < S.write.length ? '다음 단어' : '마치기';
+        drawSteps();
+      } else {
+        $('#fb').className = 'fb no';
+        $('#fb').textContent = '빨간 칸의 글자가 맞지 않아요. 해독 노트와 비교해 보세요.';
+      }
+    };
+  }
+  function drawCompose() {
+    $('#compose').innerHTML = st.comp.map((c, si) => `<div class="syl"><h3>${si + 1}음절</h3><div class="slots">${
+      ['onset0', 'nucleus', 'coda0'].map((k) => {
+        const v = c[k];
+        const inner = v === null ? SLOT[k] : v === '' ? '없음' : `<span class="gg">${glyph(v)}</span>`;
+        const sel = st.sel && st.sel.s === si && st.sel.k === k ? ' sel' : '';
+        return `<button class="slot${sel}" data-s="${si}" data-k="${k}" aria-label="${si + 1}음절 ${SLOT[k]}">${inner}</button>`;
+      }).join('')}</div></div>`).join('');
+    $$('.slot').forEach((b) => b.onclick = () => { st.sel = { s: +b.dataset.s, k: b.dataset.k }; drawCompose(); drawPalette(); });
+  }
+  function drawPalette() {
+    const k = st.sel.k;
+    const ids = S.notebookOrder.filter((id) => st.known.has(id) && (k === 'nucleus') === isVowel(id));
+    $('#pal').innerHTML = ids.map((id) => `<button class="chip" data-id="${id}" aria-label="글자 선택">${glyph(id)}</button>`).join('')
+      + (k === 'coda0' ? '<button class="chip" data-id="">없음</button>' : '');
+    $$('.chip').forEach((b) => b.onclick = () => {
+      if (st.solved) return;
+      st.comp[st.sel.s][st.sel.k] = b.dataset.id;
+      const order = st.comp.flatMap((_, si) => ['onset0', 'nucleus', 'coda0'].map((kk) => ({ s: si, k: kk })));
+      const cur = order.findIndex((o) => o.s === st.sel.s && o.k === st.sel.k);
+      const nxt = order.slice(cur + 1).find((o) => st.comp[o.s][o.k] === null);
+      if (nxt) st.sel = nxt;
+      drawCompose(); drawPalette(); drawPreview();
+    });
+  }
+  function drawPreview() {
+    const syls = st.comp.filter((c) => c.nucleus || c.onset0).map((c) => ({
+      onset: c.onset0 ? [c.onset0] : [], nucleus: c.nucleus || undefined, coda: c.coda0 ? [c.coda0] : [],
+    }));
+    $('#pv').innerHTML = syls.length ? script.renderWord(syls, { scale: 1.5 }) : '<span class="small">아직 고른 글자가 없어요.</span>';
+  }
+
+  function done() {
+    drawSteps();
+    $('#stage').innerHTML = `<p class="task">출발 준비 완료.</p>
+      <p class="sub">해독 노트의 글자 ${st.known.size}개와 규칙 ${st.rules.length}개를 챙겨 지구로 향합니다. 이제 처음 보는 언어를 같은 방법으로 읽게 됩니다.</p>
+      <div class="lex">${Object.keys(W).map((w) => `<div class="wcard"><div class="kr">${w}</div><div class="glyphs">${word(w, 0.9)}</div></div>`).join('')}</div>
+      <button class="btn ghost" id="again">처음부터 다시</button>`;
+    $('#again').onclick = () => { st.known = new Set(S.knownAtStart); st.rules = []; drawNote(); go('intro'); };
+  }
+
+  drawFrieze();
+  drawNote();
+  go('intro');
+}
+</script>
+</body>
+</html>

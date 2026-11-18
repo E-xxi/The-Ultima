@@ -2,7 +2,7 @@
 // 나중에 엔진이나 Steam Cloud로 옮겨도 이 파일의 형식(save_version, 변환, 검증)은 그대로 쓴다.
 import {newState, PAGES, CELLS, MEMO_MAX, GUESS_MAX} from './state.js';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 4;
 export const KEY = 'ultima.save';
 const TMP = 'ultima.save.tmp';
 
@@ -26,6 +26,10 @@ const MIGRATIONS = {
   },
   // v1 → v2: 글자마다 적는 추측(guesses)이 생겼다
   1: (s) => ({save_version: 2, state: {...s, guesses: {}}}),
+  // v2 → v3: 두 층 대조(짝, 대조 완료 기록)가 생겼다
+  2: (s) => ({save_version: 3, state: {...s, pairs: {}, verified: {}}}),
+  // v3 → v4: 기록문자 해독 진행(알아낸 글자·규칙)이 생겼다
+  3: (s) => ({save_version: 4, state: {...s, decipher: {known: [], rules: []}}}),
 };
 
 export function serialize(state, gameVersion) {
@@ -51,10 +55,16 @@ export function parse(raw) {
 export function validateState(s) {
   if (!s || typeof s !== 'object') return '상태 없음';
   if (typeof s.chapter !== 'number' || typeof s.map !== 'string') return '단계나 장소가 없음';
-  for (const f of ['events', 'read', 'seen', 'solved', 'visited', 'discovered', 'answers', 'guesses']) {
+  for (const f of ['events', 'read', 'seen', 'solved', 'visited', 'discovered', 'answers', 'guesses', 'pairs', 'verified']) {
     if (!s[f] || typeof s[f] !== 'object' || Array.isArray(s[f])) return f + ' 형식이 틀림';
   }
+  for (const rec of Object.values(s.pairs)) {
+    if (!rec || typeof rec !== 'object') return '대조 짝 형식이 틀림';
+    for (const r of Object.values(rec)) if (!Array.isArray(r) || r.length !== 2 || !r.every(Number.isInteger) || r[0] > r[1]) return '대조 짝 범위가 틀림';
+  }
   for (const [k, v] of Object.entries(s.guesses)) if (typeof v !== 'string' || v.length > GUESS_MAX || !/^[ms]:/.test(k)) return '추측 형식이 틀림';
+  const dc = s.decipher;
+  if (!dc || !Array.isArray(dc.known) || !Array.isArray(dc.rules) || ![...dc.known, ...dc.rules].every(x => typeof x === 'string')) return '해독 진행 형식이 틀림';
   if (s.pos !== null && (typeof s.pos !== 'object' || typeof s.pos.x !== 'number' || typeof s.pos.y !== 'number')) return '위치 형식이 틀림';
   const nb = s.notebook;
   if (!nb || !Array.isArray(nb.pages) || nb.pages.length !== PAGES) return '노트 장수가 틀림';

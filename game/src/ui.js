@@ -73,8 +73,54 @@ function renderDiary(sheet, doc, txt, closeLabel, onClose) {
   return {turn, atEnd: () => i + per() >= pages.length};
 }
 
+// 학습 창: 한 쪽씩 넘기며 배운다. 쪽마다 제목, 설명, 조각표(table), 보기 낱말(examples). 돌려주는 {turn, atEnd}로 넘긴다.
+function renderLesson(sheet, doc, art, lang, txt, closeLabel, onClose) {
+  const pages = doc.pages;
+  let i = 0;
+  function render() {
+    const pg = pages[i];
+    sheet.textContent = ''; sheet.className = 'sheet doc-lesson';
+    const head = make('div', 'shead'); head.append(make('span', '', doc.head[0]), make('span', '', doc.head[1] || ''));
+    sheet.append(head, make('h1', '', pg.title));
+    for (const p of pg.paragraphs || []) sheet.appendChild(make('p', '', p));
+    if (pg.table) {
+      const row = make('div', 'ltable'), list = pg.table === 'initials' ? lang.initials : lang.medials;
+      for (const p of list) {
+        const cell = make('div', 'part');
+        cell.append(pg.table === 'initials'
+          ? pieceCanvas(art, 4, 4, g => art.drawBits(g, p.bits, 0, 0, art.PAL.print), 7)
+          : pieceCanvas(art, 7, 7, g => { g.fillStyle = 'rgba(59,91,138,.18)'; g.fillRect(p.vertical ? 0 : 1, p.vertical ? 1 : 0, 4, 4); art.drawBits(g, lang.blockBits(null, p.id), 0, 0, art.PAL.print); }, 5),
+          make('span', '', p.jamo));
+        row.appendChild(cell);
+      }
+      sheet.appendChild(row);
+    }
+    if (pg.examples) {
+      const ex = make('div', 'lexamples');
+      for (const word of pg.examples) {
+        const f = make('figure'), blocks = make('div', 'lblocks');
+        for (const syl of word) blocks.appendChild(pieceCanvas(art, 7, 7, g => art.drawBits(g, lang.machineBits(syl), 0, 0, art.PAL.mInk), 7));
+        f.append(blocks, make('figcaption', '', word.map(lang.hangul).join('')));
+        ex.appendChild(f);
+      }
+      sheet.appendChild(ex);
+    }
+    const nav = make('div', 'sfoot lnav'), prev = make('button', 'dturn', '◀'), next = make('button', 'dturn', '▶'), num = make('span', 'dno', (i + 1) + ' / ' + pages.length);
+    const close = make('button', 'act', closeLabel);
+    prev.type = next.type = close.type = 'button'; prev.disabled = i === 0; next.disabled = i === pages.length - 1;
+    prev.setAttribute('aria-label', txt.prev); next.setAttribute('aria-label', txt.next);
+    prev.addEventListener('click', () => turn(-1)); next.addEventListener('click', () => turn(1)); close.addEventListener('click', onClose);
+    const pager = make('div', 'pager'); pager.append(prev, num, next);
+    nav.append(pager, close); sheet.appendChild(nav);
+  }
+  function turn(d) { const ni = i + d; if (ni < 0 || ni >= pages.length) return; i = ni; render(); }
+  render();
+  return {turn, atEnd: () => i >= pages.length - 1};
+}
+
 export function renderDoc(sheet, doc, art, lang, closeLabel, onClose, txt) {
   if (doc.style === 'diary') return renderDiary(sheet, doc, txt.diary, closeLabel, onClose);
+  if (doc.style === 'lesson') return renderLesson(sheet, doc, art, lang, txt.lesson, closeLabel, onClose);
   sheet.textContent = '';
   // 'doc-' 접두어: 문서 모양 이름(book 등)이 노트(.book) 같은 다른 화면의 클래스와 겹치지 않게
   sheet.className = 'sheet' + (doc.style ? ' doc-' + doc.style : '');
@@ -141,7 +187,8 @@ export function createDialogue(story) {
 /* ---------- 노트 (플레이어의 추측) ---------- */
 // 칸을 누르면 그 글자를 고르고(sel), 메모 위에 추측 칸이 열린다. 추측은 글자마다 하나(guesses['s:tree']).
 // actions: {select(i), page(n)}, txt: story.json ui.notebook
-export function renderNotebook(nb, art, lang, actions, forwardText, guesses, sel, txt) {
+// sounds: 대조를 마쳐 소리가 밝혀진 기호 ('s:tree' → '오마'). 칸에 파란 글씨로 적는다.
+export function renderNotebook(nb, art, lang, actions, forwardText, guesses, sel, txt, sounds = {}) {
   // 맨 위 네모 다섯 개 = 1~5장. 지금 장은 채워지고, 적은 게 있는 장은 옅게 칠해진다.
   const tabs = $('ptabs'); tabs.textContent = '';
   for (let n = 0; n < PAGES; n++) {
@@ -160,6 +207,8 @@ export function renderNotebook(nb, art, lang, actions, forwardText, guesses, sel
       const guess = guesses[q.k + ':' + q.id];
       b.classList.add('full'); if (i === sel) b.classList.add('sel');
       b.appendChild(glyphCanvas(art, lang, q, art.PAL.ink));
+      const sound = sounds[q.k + ':' + q.id];
+      if (sound) b.appendChild(make('span', 'gsound', sound));
       if (guess) b.appendChild(make('span', 'gtext', guess));
       b.setAttribute('aria-label', guess ? txt.cell_with_guess + ' ' + guess : txt.cell);
       b.addEventListener('click', () => actions.select(i));
@@ -263,13 +312,274 @@ export function openPractice(puzzle, art, lang, txt, solved, onStep, onDone, onC
   render();
 }
 
+/* ---------- 언어 게임 자리(임시) ---------- */
+// 언어 디자인이 확정되기 전, 진행만 이어지도록 버튼으로 완료 처리하는 화면
+export function openPlaceholder(txt, solved, onSolve, onClose) {
+  practiceToken = null;
+  const sheet = $('practicesheet'); sheet.textContent = ''; sheet.className = 'sheet doc-placeholder';
+  const head = make('div', 'shead'); head.append(make('span', '', txt.head[0]), make('span', '', txt.head[1] || ''));
+  sheet.append(head, make('h1', '', txt.title));
+  for (const p of txt.paragraphs || []) sheet.appendChild(make('p', '', p));
+  sheet.appendChild(make('p', 'note', solved ? txt.done : txt.note));
+  const foot = make('div', 'sfoot'), close = make('button', 'act later', txt.close), ok = make('button', 'act', txt.solve);
+  close.type = ok.type = 'button'; ok.disabled = solved;
+  close.addEventListener('click', onClose); ok.addEventListener('click', onSolve);
+  foot.append(close, ok); sheet.appendChild(foot);
+}
+
+/* ---------- 퍼즐: 0단계 출발 전 연습 (비교 → 읽기 → 쓰기) ---------- */
+// 참조 구현 0-1_game_script/stage0/template.html을 게임 화면(서류 시트)으로 옮겼다. 판정은 stage0.js, 문구는 story.json ui.study0.
+// 해독 진행(progress = state.decipher)은 cb.learn / cb.reset으로만 바꾸고, 마치기는 cb.finish, 덮기는 cb.close.
+// 글자는 렌더러가 만든 SVG(우리 데이터로 만든 문자열)를 그대로 넣는다. 각 글자 <g class="part">에 data-syl·data-slot·data-ph가 있다.
+export function openStage0(S, phonemes, renderer, txt, progress, logic, cb) {
+  practiceToken = {};
+  const sheet = $('practicesheet'), W = S.words, LT = S.letters, T = txt;
+  const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => o[k]);
+  const q = sel => sheet.querySelector(sel), qa = sel => [...sheet.querySelectorAll(sel)];
+  const vowels = new Set(phonemes.vowels.map(v => v.id)), isVowel = id => vowels.has(id);
+  const PH = logic.PHASES.map(id => ({id, n: S[id].length}));
+  const st = {phase: 'intro', i: 0, solved: false, fresh: new Set(), comp: null, sel: null};
+  const glyph = (id, scale = 1) => isVowel(id) ? renderer.renderVowel(id, {scale}) : renderer.renderConsonant(id, {scale});
+  const word = (name, scale = 1.5) => renderer.renderWord(W[name], {scale});
+  const keyOf = g => `${g.dataset.syl}:${g.dataset.slot}`;
+  const slotName = k => T.slots[k.split(':')[1]] || k;
+  const sylName = k => fill(T.syllable, {n: +k.split(':')[0] + 1});
+  if (!progress.known.length) cb.reset();
+
+  sheet.className = 'sheet doc-stage0';
+  sheet.innerHTML = `<header class="top"><div class="frieze" aria-hidden="true"></div>
+    <div class="toprow"><h1></h1><button type="button" class="act later" id="s0close"></button></div><p class="lede"></p><div class="steps"></div></header>
+    <div class="wrap"><main class="stage" aria-live="polite"></main>
+    <aside class="s0note"><h2></h2><p class="cnt"></p><div class="ngrid"></div><ul class="rules"></ul></aside></div>`;
+  q('h1').textContent = T.title; q('.lede').textContent = T.subtitle; q('#s0close').textContent = T.close; q('.s0note h2').textContent = T.note.title;
+  q('aside').setAttribute('aria-label', T.note.title);
+  q('#s0close').addEventListener('click', cb.close);
+  const syls = ['감자', '강수', '남산', '상자', '간사', '감수', '산수', '강자', '남자'].filter(w => W[w]).flatMap(w => W[w]);
+  q('.frieze').innerHTML = renderer.renderWord(syls, {scale: 0.9}) + renderer.renderWord(syls, {scale: 0.9});
+  const stage = q('.stage');
+
+  function drawSteps() {
+    const idx = PH.findIndex(p => p.id === st.phase);
+    q('.steps').innerHTML = PH.map((p, i) => {
+      const cls = i === idx ? 'on' : i < idx || st.phase === 'done' ? 'done' : '';
+      const filled = i < idx || st.phase === 'done' ? p.n : i === idx ? st.i + (st.solved ? 1 : 0) : 0;
+      const pips = Array.from({length: p.n}, (_, j) => `<i class="pip${j < filled ? ' f' : ''}"></i>`).join('');
+      return `<span class="step ${cls}">${T.phases[p.id]}<span class="pips">${pips}</span></span>`;
+    }).join('');
+  }
+  function drawNote() {
+    q('.cnt').textContent = fill(T.note.count, {n: progress.known.length, total: S.notebookOrder.length});
+    q('.ngrid').innerHTML = S.notebookOrder.map(id => {
+      if (!progress.known.includes(id)) return `<div class="ncell lock"><div class="g">?</div>${T.note.locked}</div>`;
+      return `<div class="ncell${st.fresh.has(id) ? ' new' : ''}"><div class="g">${glyph(id)}</div>${LT[id].hangul} /${LT[id].ipa}/</div>`;
+    }).join('');
+    st.fresh.clear();
+    q('.rules').innerHTML = '';
+    for (const r of progress.rules.length ? progress.rules : [T.note.empty]) q('.rules').appendChild(make('li', '', r));
+  }
+  function learn(ids, rule) { cb.learn(ids, rule).forEach(id => st.fresh.add(id)); drawNote(); }
+  function go(phase, i = 0) {
+    st.phase = phase; st.i = i; st.solved = false;
+    drawSteps();
+    ({intro, compare, read, write, done})[phase]();
+    sheet.scrollTop = 0;
+  }
+  function next() {
+    const p = PH.find(x => x.id === st.phase);
+    if (st.i + 1 < p.n) return go(st.phase, st.i + 1);
+    const idx = PH.indexOf(p);
+    go(idx + 1 < PH.length ? PH[idx + 1].id : 'done');
+  }
+  const btn = (label, cls = 'btn') => `<button type="button" class="${cls}">${label}</button>`;
+
+  // ---------- 교과서 한 과 ----------
+  function intro() {
+    const I = T.intro;
+    const known = progress.known.map(id => `<tr><td class="kg">${glyph(id, 0.9)}</td><td>${LT[id].hangul}</td><td>/${LT[id].ipa}/</td><td>${isVowel(id) ? I.vowel : I.consonant}</td></tr>`).join('');
+    stage.innerHTML = `<article class="s0book">
+      <div class="rh"><span>${I.running[0]}</span><span>${I.running[1]}</span></div>
+      <p class="kick">${I.kicker}</p><h2 class="lesson">${I.title}</h2><p class="lead">${I.lead}</p>
+      <div class="goal"><b>${I.goal_title}</b><ul>${I.goals.map(g => `<li>${g}</li>`).join('')}</ul></div>
+      <h3>${I.s1}</h3><p>${I.s1_text}</p><p class="caution"><b>${I.caution_label}</b>${I.caution}</p>
+      <h3>${I.s2}</h3><p>${I.s2_text}</p>
+      <figure class="f0"><div class="f0box"></div><figcaption>${I.figure_caption}</figcaption></figure>
+      <h3>${I.s3}</h3><p>${I.s3_text}</p>
+      <table class="known"><caption>${I.table_caption}</caption><thead><tr>${I.table_head.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${known}</tbody></table>
+      <div class="end">${btn(I.start)}<span class="small">${fill(I.counts, {compare: S.compare.length, read: S.read.length, write: S.write.length})}</span></div>
+    </article>`;
+    drawFigure();
+    q('.end .btn').addEventListener('click', () => go('compare'));
+  }
+  // 그림 0-1: 렌더러가 배치한 실제 좌표를 읽어 이름표를 단다(글자 모양이 바뀌어도 따라간다)
+  function drawFigure() {
+    const I = T.intro, L = I.figure_labels, S2 = 2, OX = 70, OY = 96, VW = 700, fw0 = W[I.figure_word];
+    const wl = renderer.layoutWord(fw0), base = OX + (560 - wl.width * S2) / 2, box = q('.f0box');
+    box.innerHTML = `<svg viewBox="0 0 ${VW} 300" role="img" aria-label="${I.figure_caption}"><g transform="translate(${base} ${OY}) scale(${S2})" class="fw">${wl.svg}</g><g class="ann"></g></svg>`;
+    const pos = p => {
+      const sx = +(p.parentNode.getAttribute('transform').match(/translate\(([-\d.]+)/)?.[1] || 0);
+      const m = p.getAttribute('transform').match(/translate\(([-\d.]+) ([-\d.]+)\)(?: scale\(([\d.]+)\))?/);
+      const x = sx + +m[1], y = +m[2], s = +(m[3] || 1);
+      return {cx: base + S2 * (x + 25 * s), bot: OY + S2 * (y + 48 * s), l: base + S2 * x, r: base + S2 * (x + 50 * s)};
+    };
+    const parts = [...box.querySelectorAll('.fw .part')];
+    const get = (syl, slot) => pos(parts.find(p => p.dataset.syl == syl && p.dataset.slot === slot));
+    const callout = (p, [name, desc]) => `<line x1="${p.cx}" y1="${p.bot + 6}" x2="${p.cx}" y2="230" class="ld"/><text x="${p.cx}" y="250" class="an">${name}</text><text x="${p.cx}" y="270" class="ad">${desc}</text>`;
+    const bracket = (a, b, t) => `<path d="M${a} 52V44H${b}V52" class="br"/><text x="${(a + b) / 2}" y="34" class="an">${t}</text>`;
+    const s0 = [get(0, 'onset0'), get(0, 'nucleus'), get(0, 'coda0')], s1 = [get(1, 'onset0'), get(1, 'nucleus')];
+    const chars = [...I.figure_word];
+    box.querySelector('.ann').innerHTML =
+      bracket(s0[0].l, s0[2].r, `${fill(T.syllable, {n: 1})} · ${chars[0]}`) + bracket(s1[0].l, s1[1].r, `${fill(T.syllable, {n: 2})} · ${chars[1]}`) +
+      `<text x="${(s0[2].r + s1[0].l) / 2}" y="78" class="ad">${L.gap}</text>` +
+      callout(s0[0], L.onset0) + callout(s0[1], L.nucleus) + callout(s0[2], L.coda0);
+  }
+
+  // ---------- 비교: 달라진 글자 찾기 ----------
+  function compare() {
+    const r = S.compare[st.i], C = T.compare;
+    stage.innerHTML = `<div class="pair">${[r.a, r.b].map(w => `<div class="wcard"><div class="kr">${w}</div><div class="glyphs clickable">${word(w)}</div></div>`).join('')}</div>
+      <p class="fb"></p><div class="rv"></div>`;
+    const pick = (g, box) => {
+      if (st.solved) return;
+      const k = keyOf(g), fb = q('.fb');
+      if (logic.compareResult(S, r, k) === 'found') {
+        st.solved = true;
+        // 한쪽만 눌러도 두 단어의 달라진 글자가 함께 선택되고, 한글 이름표가 붙는다
+        const diff = logic.diffKeys(W[r.a], W[r.b]);
+        qa('.stage .part').filter(p => diff.includes(keyOf(p))).forEach(p => {
+          p.classList.add('hl');
+          const s = +((p.getAttribute('transform') || '').match(/scale\(([\d.]+)\)/)?.[1] || 1);
+          const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          t.setAttribute('class', 'lbl'); t.setAttribute('x', 25); t.setAttribute('y', 50 + 20 / s);
+          t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', 17 / s);
+          t.textContent = LT[p.dataset.ph]?.hangul || '';
+          p.appendChild(t);
+        });
+        fb.className = 'fb'; fb.textContent = '';
+        const rv = r.reveal.map(id => `<div class="rg"><div class="g">${glyph(id, 1)}</div><div><b>${LT[id].hangul}</b><span>/${LT[id].ipa}/${LT[id].hint ? ' · ' + LT[id].hint : ''}</span></div></div>`).join('');
+        q('.rv').innerHTML = `<div class="reveal"><div class="rgl">${rv}</div><p>${fill(C.where, {ord: T.ordinals[+k.split(':')[0]], slot: slotName(k)})}</p></div>${btn(st.i + 1 < S.compare.length ? C.next : C.to_read)}`;
+        learn(r.reveal, T.rules[st.i]);
+        drawSteps();
+        const nx = q('.rv .btn'); nx.addEventListener('click', next); nx.focus();
+      } else {
+        g.classList.add('bad'); box.classList.add('shake');
+        setTimeout(() => { g.classList.remove('bad'); box.classList.remove('shake'); }, 600);
+        fb.className = 'fb no'; fb.textContent = fill(C.same, {syl: sylName(k), slot: slotName(k)});
+      }
+    };
+    qa('.clickable').forEach(box => {
+      // 키보드로도 고를 수 있게: 글자마다 탭 이동, Enter/Space로 고른다(이름표에는 자리만 적는다)
+      box.querySelectorAll('.part').forEach(g => { g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.setAttribute('aria-label', `${sylName(keyOf(g))} ${slotName(keyOf(g))}`); });
+      box.addEventListener('click', e => { const g = e.target.closest('.part'); if (g) pick(g, box); });
+      box.addEventListener('keydown', e => { const g = e.target.closest('.part'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); pick(g, box); } });
+    });
+  }
+
+  // ---------- 읽기: 기록 보고 단어 고르기 ----------
+  function read() {
+    const r = S.read[st.i], R = T.read;
+    stage.innerHTML = `<p class="task">${R.task}</p><p class="sub">${R.sub}</p>
+      <div class="wcard solo"><div class="glyphs shown">${word(r.word, 1.8)}</div></div>
+      <div class="opts"></div><p class="fb"></p><div class="nxw"></div>`;
+    for (const o of r.options) {
+      const b = make('button', 'opt', o); b.type = 'button';
+      b.addEventListener('click', () => {
+        if (st.solved) return;
+        const res = logic.readResult(S, r, o), fb = q('.fb');
+        qa('.shown .part').forEach(p => p.classList.remove('bad'));
+        if (res.ok) {
+          st.solved = true; b.classList.add('yes');
+          fb.className = 'fb ok'; fb.textContent = fill(R.ok, {word: r.word});
+          q('.nxw').innerHTML = btn(st.i + 1 < S.read.length ? R.next : R.to_write);
+          drawSteps();
+          const nx = q('.nxw .btn'); nx.addEventListener('click', next); nx.focus();
+        } else {
+          b.classList.add('no'); b.disabled = true;
+          qa('.shown .part').forEach(p => res.diff.includes(keyOf(p)) && p.classList.add('bad'));
+          fb.className = 'fb no'; fb.textContent = fill(R.wrong, {word: o, where: res.diff.map(k => `${sylName(k)} ${slotName(k)}`).join(', ')});
+        }
+      });
+      q('.opts').appendChild(b);
+    }
+  }
+
+  // ---------- 쓰기: 칸마다 글자 고르기 (팔레트는 모양만, 한글·발음 표기 없음) ----------
+  function write() {
+    const target = S.write[st.i], R = T.write;
+    st.comp = W[target].map(() => ({onset0: null, nucleus: null, coda0: null}));
+    st.sel = {s: 0, k: 'onset0'};
+    stage.innerHTML = `<p class="task">${fill(R.task, {word: target})}</p><p class="sub">${R.sub}</p>
+      <div class="compose"></div><div class="palette"></div>
+      <div class="wcard preview"><div class="kr">${R.preview}</div><div class="glyphs pv"></div></div>
+      ${btn(R.check)}<p class="fb"></p>`;
+    drawCompose(); drawPalette(); drawPreview();
+    const chk = q('.stage > .btn');
+    chk.addEventListener('click', () => {
+      if (st.solved) return next();
+      const wrong = logic.writeWrong(S, target, st.comp), fb = q('.fb');
+      qa('.slot').forEach(el => el.classList.toggle('bad', wrong.includes(`${el.dataset.s}:${el.dataset.k}`)));
+      if (!wrong.length) {
+        st.solved = true;
+        fb.className = 'fb ok'; fb.textContent = fill(R.ok, {word: target});
+        chk.textContent = st.i + 1 < S.write.length ? R.next : R.finish;
+        drawSteps();
+      } else { fb.className = 'fb no'; fb.textContent = R.wrong; }
+    });
+  }
+  function drawCompose() {
+    const R = T.write;
+    q('.compose').innerHTML = st.comp.map((c, si) => `<div class="syl"><h3>${fill(T.syllable, {n: si + 1})}</h3><div class="slots">${
+      logic.SLOTS.map(k => {
+        const v = c[k], inner = v === null ? T.slots[k] : v === '' ? R.none : `<span class="gg">${glyph(v)}</span>`;
+        const sel = st.sel && st.sel.s === si && st.sel.k === k ? ' sel' : '';
+        return `<button type="button" class="slot${sel}" data-s="${si}" data-k="${k}" aria-label="${fill(T.syllable, {n: si + 1})} ${T.slots[k]}">${inner}</button>`;
+      }).join('')}</div></div>`).join('');
+    qa('.slot').forEach(b => b.addEventListener('click', () => { st.sel = {s: +b.dataset.s, k: b.dataset.k}; drawCompose(); drawPalette(); }));
+  }
+  function drawPalette() {
+    const ids = logic.paletteFor(S, st.sel.k, progress.known, isVowel);
+    q('.palette').innerHTML = ids.map(id => `<button type="button" class="chip" data-id="${id}" aria-label="${T.write.pick}">${id === '' ? T.write.none : glyph(id)}</button>`).join('');
+    qa('.chip').forEach(b => b.addEventListener('click', () => {
+      if (st.solved) return;
+      st.comp[st.sel.s][st.sel.k] = b.dataset.id;
+      // 글자를 넣으면 다음 빈 칸으로 옮겨 간다
+      const order = st.comp.flatMap((_, si) => logic.SLOTS.map(k => ({s: si, k})));
+      const cur = order.findIndex(o => o.s === st.sel.s && o.k === st.sel.k);
+      const nxt = order.slice(cur + 1).find(o => st.comp[o.s][o.k] === null);
+      if (nxt) st.sel = nxt;
+      drawCompose(); drawPalette(); drawPreview();
+    }));
+  }
+  function drawPreview() {
+    const syls = st.comp.filter(c => c.nucleus || c.onset0).map(c => ({onset: c.onset0 ? [c.onset0] : [], nucleus: c.nucleus || undefined, coda: c.coda0 ? [c.coda0] : []}));
+    q('.pv').innerHTML = syls.length ? renderer.renderWord(syls, {scale: 1.5}) : `<span class="small">${T.write.empty}</span>`;
+  }
+
+  // ---------- 끝 ----------
+  function done() {
+    const D = T.done;
+    drawSteps();
+    stage.innerHTML = `<p class="task">${D.task}</p><p class="sub">${fill(D.sub, {known: progress.known.length, rules: progress.rules.length})}</p>
+      <div class="lex">${Object.keys(W).map(w => `<div class="wcard"><div class="kr">${w}</div><div class="glyphs">${word(w, 0.9)}</div></div>`).join('')}</div>
+      <div class="end">${btn(D.finish)}${btn(D.again, 'btn ghost')}</div>`;
+    const [fin, again] = qa('.end .btn');
+    fin.addEventListener('click', cb.finish);
+    again.addEventListener('click', () => { cb.reset(); drawNote(); go('intro'); });
+    fin.focus();
+  }
+
+  drawNote();
+  go('intro');
+}
+
 /* ---------- 퍼즐: 연구 보고서 ---------- */
+// surface가 없으면(기록 사진이 없는 보고서) 그림 없이 적는다
 export function openReport(puzzle, surface, art, txt, onSend, onLater) {
   const sheet = $('reportsheet'); sheet.textContent = '';
   const head = make('div', 'shead'); head.append(make('span', '', txt.head[0]), make('span', '', txt.head[1]));
   const dl = make('dl', 'meta'); for (const [k, v] of txt.fields) dl.append(make('dt', '', k), make('dd', '', v));
   const fig = make('div'); fig.id = 'repfig';
-  const c = art.mk(surface.w, surface.h); c.getContext('2d').drawImage(surface.img, 0, 0); c.style.width = surface.w * 3 + 'px'; c.style.maxWidth = '100%'; fig.appendChild(c);
+  if (surface) { const c = art.mk(surface.w, surface.h); c.getContext('2d').drawImage(surface.img, 0, 0); c.style.width = surface.w * 3 + 'px'; c.style.maxWidth = '100%'; fig.appendChild(c); }
+  for (const p of txt.paragraphs || []) fig.appendChild(make('p', '', p));
   const ta = make('textarea'); ta.id = 'reptext'; ta.maxLength = puzzle.max_length; ta.spellcheck = false; ta.setAttribute('aria-label', txt.answer);
   const foot = make('div', 'sfoot'), later = make('button', 'act later', txt.later), send = make('button', 'act', txt.send);
   later.type = send.type = 'button'; send.disabled = true;

@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "status": "provisional",
+    "note": "그래픽 규칙 검증용 샘플 음소만 수록. 최종 음소 목록이 아니다. IPA(발음 정보)와 그래픽(graphemes.json)은 분리되어 있으며, 그래픽은 PhoneticFeature로부터 규칙에 따라 생성된다."
+  },
+  "consonants": [
+    { "id": "p",   "ipa": "p",   "place": "bilabial",        "manner": "stop",        "laryngeal": "plain" },
+    { "id": "b",   "ipa": "b",   "place": "bilabial",        "manner": "stop",        "laryngeal": "voiced" },
+    { "id": "pʰ",  "ipa": "pʰ",  "place": "bilabial",        "manner": "stop",        "laryngeal": "aspirated" },
+    { "id": "pʼ",  "ipa": "pʼ",  "place": "bilabial",        "manner": "stop",        "laryngeal": "ejective" },
+    { "id": "m",   "ipa": "m",   "place": "bilabial",        "manner": "nasal",       "laryngeal": "voiced" },
+    { "id": "w",   "ipa": "w",   "place": "labial-velar",    "manner": "approximant", "laryngeal": "voiced" },
+    { "id": "t",   "ipa": "t",   "place": "alveolar",        "manner": "stop",        "laryngeal": "plain" },
+    { "id": "d",   "ipa": "d",   "place": "alveolar",        "manner": "stop",        "laryngeal": "voiced" },
+    { "id": "tʰ",  "ipa": "tʰ",  "place": "alveolar",        "manner": "stop",        "laryngeal": "aspirated" },
+    { "id": "tʼ",  "ipa": "tʼ",  "place": "alveolar",        "manner": "stop",        "laryngeal": "ejective" },
+    { "id": "n",   "ipa": "n",   "place": "alveolar",        "manner": "nasal",       "laryngeal": "voiced" },
+    { "id": "s",   "ipa": "s",   "place": "alveolar",        "manner": "fricative",   "laryngeal": "plain" },
+    { "id": "z",   "ipa": "z",   "place": "alveolar",        "manner": "fricative",   "laryngeal": "voiced" },
+    { "id": "tɕ",  "ipa": "tɕ",  "place": "alveolo-palatal", "manner": "affricate",   "laryngeal": "plain" },
+    { "id": "dʑ",  "ipa": "dʑ",  "place": "alveolo-palatal", "manner": "affricate",   "laryngeal": "voiced" },
+    { "id": "j",   "ipa": "j",   "place": "palatal",         "manner": "approximant", "laryngeal": "voiced" },
+    { "id": "k",   "ipa": "k",   "place": "velar",           "manner": "stop",        "laryngeal": "plain" },
+    { "id": "g",   "ipa": "ɡ",   "place": "velar",           "manner": "stop",        "laryngeal": "voiced" },
+    { "id": "kʰ",  "ipa": "kʰ",  "place": "velar",           "manner": "stop",        "laryngeal": "aspirated" },
+    { "id": "kʼ",  "ipa": "kʼ",  "place": "velar",           "manner": "stop",        "laryngeal": "ejective" },
+    { "id": "ŋ",   "ipa": "ŋ",   "place": "velar",           "manner": "nasal",       "laryngeal": "voiced" },
+    { "id": "kʷ", "ipa": "kʷ",  "place": "velar",           "manner": "stop",        "laryngeal": "plain", "secondary": "labialized" },
+    { "id": "tʲ",  "ipa": "tʲ",  "place": "alveolar",        "manner": "stop",        "laryngeal": "plain", "secondary": "palatalized" },
+    { "id": "q",   "ipa": "q",   "place": "uvular",          "manner": "stop",        "laryngeal": "plain" },
+    { "id": "qʼ",  "ipa": "qʼ",  "place": "uvular",          "manner": "stop",        "laryngeal": "ejective" }
+  ],
+  "vowels": [
+    { "id": "a", "ipa": "a", "base": "a" },
+    { "id": "e", "ipa": "e", "base": "e" },
+    { "id": "i", "ipa": "i", "base": "i" },
+    { "id": "o", "ipa": "o", "base": "o" },
+    { "id": "u", "ipa": "u", "base": "u" },
+    { "id": "ʌ", "ipa": "ʌ", "base": "ʌ" },
+    { "id": "ã",  "ipa": "ã",  "base": "a", "nasal": true },
+    { "id": "aː", "ipa": "aː", "base": "a", "long": true },
+    { "id": "ãː", "ipa": "ãː", "base": "a", "nasal": true, "long": true }
+  ],
+  "sampleSyllables": [
+    { "label": "지",       "ipa": "dʑi",  "onset": ["dʑ"],           "nucleus": "i",  "coda": [] },
+    { "label": "원",       "ipa": "wʌn",  "onset": ["w"],            "nucleus": "ʌ",  "coda": ["n"] },
+    { "label": "지침 예시", "ipa": "kʼãː", "onset": ["kʼ"],           "nucleus": "ãː", "coda": [] },
+    { "label": "CCV 구조",  "ipa": "tkʼa", "onset": ["t", "kʼ"],      "nucleus": "a",  "coda": [] },
+    { "label": "CCCV 구조", "ipa": "ktkʼa","onset": ["k", "t", "kʼ"], "nucleus": "a",  "coda": [] },
+    { "label": "CCVC 구조", "ipa": "kʷten","onset": ["kʷ", "t"],      "nucleus": "e",  "coda": ["n"] }
+  ]
+}

@@ -230,12 +230,12 @@ S.shelf = sprite(32, 30, (R) => {
   R(18, 12, 4, 3, PAL.paper); R(23, 11, 2, 4, PAL.cloth);
   R(5, 21, 5, 3, PAL.clay); R(19, 20, 2, 5, '#5f7a8a'); R(22, 22, 5, 2, PAL.paperD);
 });
-S.record = sprite(16, 12, (R) => {
-  R(1, 4, 13, 7, PAL.paper); R(2, 3, 11, 1, PAL.paperD); R(3, 6, 6, 1, PAL.paperD); R(3, 8, 5, 1, PAL.paperD);
-  R(8, 1, 6, 5, '#3e4650'); R(9, 2, 4, 2, PAL.cyan);
+S.record = sprite(14, 14, (R) => {   // 새긴 석판
+  R(1, 2, 12, 11, '#b9a48b'); R(1, 2, 12, 1, '#d5c3a8'); R(11, 3, 2, 10, '#9e8871');
+  R(3, 4, 7, 4, '#9e8871'); R(3, 9, 6, 1, '#7b6654'); R(3, 11, 7, 1, '#7b6654');
 });
-S.booklet = sprite(16, 11, (R) => { R(1, 2, 14, 8, '#7a4f33'); R(2, 1, 12, 8, PAL.paper); R(8, 1, 1, 8, PAL.paperD); R(3, 3, 3, 3, PAL.leaf); R(10, 4, 3, 2, PAL.sInk); });
-S.sheetSmall = sprite(14, 11, (R) => { R(1, 1, 12, 9, PAL.card); R(1, 1, 12, 2, '#9fb0c8'); R(3, 4, 4, 1, '#9fb0c8'); R(3, 6, 4, 1, '#9fb0c8'); R(9, 4, 2, 4, PAL.sInk); R(5, 7, 5, 3, '#b8a888'); });
+S.booklet = sprite(16, 12, (R) => { R(1, 2, 14, 9, '#b9a48b'); R(1, 2, 14, 1, '#d5c3a8'); R(8, 2, 1, 9, '#9e8871'); for (const [x, y] of [[3, 4], [10, 4], [3, 7], [10, 7]]) R(x, y, 3, 2, '#7b6654'); });   // 단어 석판
+S.sheetSmall = sprite(14, 11, (R) => { R(1, 1, 12, 9, '#9aa3ad'); R(1, 1, 12, 1, '#c9cfd6'); R(3, 4, 4, 1, '#6f7a86'); R(3, 6, 4, 1, '#6f7a86'); R(9, 4, 2, 4, '#4d5560'); R(0, 7, 6, 4, '#b8a888'); });   // 섬유에 싸인 금속판
 S.desk = sprite(48, 26, (R) => {
   R(3, 14, 3, 11, PAL.woodD); R(42, 14, 3, 11, PAL.woodD);
   R(1, 8, 46, 6, PAL.wood); R(1, 8, 46, 1, PAL.woodL); R(8, 14, 32, 7, PAL.woodD); R(23, 14, 1, 7, PAL.woodK); R(14, 17, 4, 1, PAL.woodL); R(30, 17, 4, 1, PAL.woodL);
@@ -406,10 +406,57 @@ S.relaydesk = sprite(16, 24, (R, P) => {
   R(1, 2, 14, 11, PAL.panelD); R(3, 4, 10, 6, '#11161f'); R(4, 5, 6, 1, PAL.cyan); R(4, 7, 4, 1, PAL.cyan);
   R(12, 0, 1, 4, PAL.metalD); R(11, 0, 3, 2, PAL.metalL); P(12, 1, PAL.red);
 });
+// 0-1 내 방: 벽의 지구 사진·지도, 책상 위 미완료 연구계획서
+S.earthmap = sprite(30, 14, (R, P) => {
+  R(0, 0, 30, 14, '#b98a52'); R(1, 1, 13, 12, '#9cc7d8'); R(3, 7, 9, 5, PAL.leaf); R(7, 4, 4, 4, PAL.leafD); R(4, 3, 3, 2, '#e8f1f2');
+  R(16, 1, 13, 12, '#e8dfc8'); R(18, 3, 6, 4, '#7aa060'); R(22, 6, 5, 4, '#4f8fb0'); R(18, 9, 3, 2, '#7aa060'); P(24, 4, PAL.red);
+}, false);
+S.planDoc = sprite(14, 12, (R) => { R(1, 3, 11, 8, '#f4f6f8'); R(1, 3, 11, 1, PAL.print); R(3, 5, 7, 1, PAL.guide); R(3, 7, 4, 1, PAL.guide); R(9, 8, 2, 2, '#d89a3a'); });
+// 2단계 유적지
+S.ruinhouse = sprite(48, 40, (R, P) => {
+  R(4, 14, 40, 24, '#b9a48b'); R(4, 14, 40, 2, '#d5c3a8'); R(4, 34, 40, 4, '#9e8871');
+  for (let i = 0; i < 6; i++) R(4 + i * 7, 10 - (i % 3) * 2, 7, 6 + (i % 3) * 2, '#a08870');
+  R(19, 22, 10, 16, '#2a2228'); R(8, 20, 7, 6, '#2a2228'); R(34, 20, 7, 6, '#2a2228'); R(35, 21, 2, 2, PAL.sand);
+  R(0, 34, 12, 6, PAL.sand); R(38, 32, 10, 8, PAL.sand); R(14, 36, 6, 4, PAL.sand3);
+});
+S.shrub = sprite(16, 14, (R) => {
+  for (const [x, h, c] of [[4, 6, '#a3955a'], [6, 9, '#7d7440'], [8, 7, '#a3955a'], [10, 10, '#7d7440'], [12, 5, '#a3955a'], [7, 4, '#c2b16c']]) R(x, 13 - h, 1, h, c);
+  R(3, 12, 11, 1, '#7d7440');
+}, false);
+S.stump = sprite(16, 16, (R) => { R(4, 8, 8, 6, '#5a4030'); R(4, 7, 8, 2, '#7d5f3e'); R(6, 8, 4, 1, '#9a7a56'); R(2, 13, 4, 2, '#5a4030'); R(10, 13, 4, 2, '#5a4030'); });
+S.bike = sprite(26, 16, (R, P) => {
+  for (const cx of [6, 19]) for (let a = 0; a < 24; a++) { const t = a / 24 * Math.PI * 2; P(Math.round(cx + Math.cos(t) * 4), Math.round(10 + Math.sin(t) * 4), '#8a4a2a'); }
+  R(6, 9, 13, 1, '#a0583a'); R(11, 5, 1, 5, '#a0583a'); R(9, 4, 5, 1, '#5a3a2a'); R(18, 4, 1, 6, '#a0583a'); R(17, 3, 4, 1, '#5a3a2a');
+});
+S.rover = sprite(48, 32, (R, P) => {
+  R(4, 8, 40, 14, PAL.white); R(6, 4, 22, 6, PAL.panel); R(8, 5, 8, 4, PAL.visor); R(18, 5, 8, 4, PAL.visor);
+  R(4, 18, 40, 4, PAL.panelD); R(30, 10, 12, 3, PAL.accent);
+  for (const x of [8, 22, 36]) { R(x - 3, 20, 10, 10, '#2a2228'); R(x, 23, 4, 4, PAL.metalD); }
+  R(40, 2, 1, 7, PAL.metalD); P(40, 1, PAL.red);
+});
+S.ruinwall = sprite(32, 28, (R, P) => {
+  R(1, 4, 30, 22, '#a08870'); R(1, 4, 30, 2, '#c4ad92'); R(4, 1, 8, 4, '#a08870'); R(20, 2, 9, 3, '#a08870');
+  for (let i = 0; i < 5; i++) { R(5 + i * 5, 11, 3, 3, '#5a4a3a'); R(5 + i * 5, 17, 3, 2, '#5a4a3a'); }
+  R(1, 24, 30, 2, '#7d6650'); R(0, 25, 8, 3, PAL.sand);
+});
+S.inscr = sprite(14, 14, (R) => { R(1, 1, 12, 12, '#9e8871'); R(3, 3, 3, 3, '#4a3a2a'); R(8, 3, 3, 3, '#4a3a2a'); R(3, 8, 8, 2, '#4a3a2a'); }, false);
 S.diploma = sprite(14, 12, (R) => { R(0, 0, 14, 12, '#b98a52'); R(2, 2, 10, 8, '#f4f0e6'); R(4, 4, 6, 1, PAL.guide); R(4, 6, 4, 1, PAL.guide); R(9, 7, 2, 2, PAL.red); }, false);
 
 /* ================= 해독 대상 면 (records.json에서 그린다) ================= */
 // 글자를 그리면서 위치를 기억해 두고, 확대 화면에서 눌러 노트로 옮겨 적는다.
+const STONE = ['#5a4a3a', '#7b6654', '#9e8871', '#b9a48b', '#d2c0a6'];
+const METAL = ['#3e4650', '#5d6670', '#7f8a94', '#a3adb7', '#c9cfd6'];
+function carve(g, w, h, tones) {
+  const d = g.getImageData(0, 0, w, h), a = d.data, rgb = tones.map(hexRGB);
+  for (let i = 0; i < a.length; i += 4) {
+    if (!a[i + 3]) continue;
+    const l = .3 * a[i] + .59 * a[i + 1] + .11 * a[i + 2];
+    const [r, gg, b] = rgb[l > 205 ? 4 : l > 165 ? 3 : l > 115 ? 2 : l > 65 ? 1 : 0];
+    a[i] = r; a[i + 1] = gg; a[i + 2] = b;
+  }
+  g.putImageData(d, 0, 0);
+}
+const INCISE_M = '#4a3a2e', INCISE_S = '#2e2018';   // 기계 전사(얕은 새김) / 화자 문자(깊은 새김)
 function surface(w, h, draw, glyphs, ol = false) {
   const img = sprite(w, h, (R, P, g) => { draw(R, P, g); for (const q of glyphs) drawQ(g, q); }, ol);
   return {img, w, h, glyphs};
@@ -421,11 +468,12 @@ function folio(rec, seed) {
     if (ln.redacted_name) { tapes.push([y0, ln.redacted_name, true]); names.push([10, y0]); return; }
     const sounds = ln.words.flatMap(w => lang.sounds(w));
     tapes.push([y0, sounds.length, false]);
-    sounds.forEach((sy, i) => gl.push({k: 'm', id: sy, x: 10 + i * 8, y: y0 + 2}));
-    let x = 10;
+    // 대조용 표시: 기계 표기는 i(몇 번째 소리), 화자 문자는 n(몇 번째 기호), 표지는 sep
+    sounds.forEach((sy, i) => gl.push({k: 'm', id: sy, x: 10 + i * 8, y: y0 + 2, line: li, i, col: INCISE_M}));
+    let x = 10, n = 0;
     ln.words.forEach((w, wi) => {
-      if (wi > 0) { gl.push({k: 's', id: 'sep', x, y: y0 + 15}); x += 5; }
-      for (const id of w) { gl.push({k: 's', id, x, y: y0 + 15}); x += 8; }
+      if (wi > 0) { gl.push({k: 's', id: 'sep', x, y: y0 + 15, line: li, sep: true, col: INCISE_S}); x += 5; }
+      for (const id of w) { gl.push({k: 's', id, x, y: y0 + 15, line: li, n: n++, col: INCISE_S}); x += 8; }
     });
   });
   return surface(W, H, (R, P, g) => {
@@ -447,14 +495,15 @@ function folio(rec, seed) {
     if (rec.tear === 'tl') for (let i = 0; i < 10; i++) g.clearRect(0, i, 10 - i, 1);
     if (rec.tear === 'br') for (let i = 0; i < 10; i++) g.clearRect(W - i - 1, H - 10 + i, i + 1, 1);
     if (rec.tear === 'bl') for (let i = 0; i < 10; i++) g.clearRect(0, H - 10 + i, i + 1, 1);
+    carve(g, W, H, STONE);   // 석판: 부조와 새긴 띠
   }, gl, true);
 }
 // 단어 모음집: 화자가 그림 옆에 자기 문자를 적어 둔 손 공책 (2쪽 x 4칸)
 function booklet(def) {
   const pos = i => [i < 4 ? 8 + (i % 2) * 24 : 62 + (i % 2) * 24, 8 + (Math.floor(i / 2) % 2) * 30];
   const gl = [];
-  def.entries.forEach((e, i) => { if (e.morpheme) { const [x, y] = pos(i); gl.push({k: 's', id: e.morpheme, x: x + 4, y: y + 17}); } });
-  return surface(112, 68, (R, P) => {
+  def.entries.forEach((e, i) => { if (e.morpheme) { const [x, y] = pos(i); gl.push({k: 's', id: e.morpheme, x: x + 4, y: y + 17, col: INCISE_S}); } });
+  return surface(112, 68, (R, P, g) => {
     R(0, 0, 112, 68, '#7a4f33'); R(3, 3, 52, 62, '#f2e8d2'); R(57, 3, 52, 62, '#f2e8d2'); R(55, 3, 2, 62, '#c9b690');
     for (let y = 6; y < 64; y += 6) P(56, y, '#7a4f33');
     def.entries.forEach((e, i) => {
@@ -464,13 +513,14 @@ function booklet(def) {
       if (e.damage === 'blot') for (let k = 0; k < 40; k++) P(x + (k * 7) % 15, y + 2 + (k * 5) % 22, k % 2 ? '#6a6a8a' : '#8a8aa8');
       if (e.damage === 'torn') for (let k = 0; k < 26; k++) R(x - 1 + Math.max(0, 16 - k), y - 1 + k, 17, 1, '#7a4f33');
     });
+    carve(g, 112, 68, STONE);   // 단어 석판
   }, gl, true);
 }
 // 읽을 수 없는 표: 인쇄된 칸은 처음 보는 글자, 옆 칸은 화자의 손글씨. 물에 젖어 번졌다.
 function table(def) {
   const gl = [];
-  def.rows.forEach((row, i) => { if (row.handwritten) gl.push({k: 's', id: row.handwritten, x: 58, y: 15 + i * 10}); });
-  return surface(80, 76, (R, P) => {
+  def.rows.forEach((row, i) => { if (row.handwritten) gl.push({k: 's', id: row.handwritten, x: 58, y: 15 + i * 10, col: '#2a2f36'}); });
+  return surface(80, 76, (R, P, g) => {
     const r = mulberry32(77);
     R(2, 2, 76, 72, PAL.card); R(2, 2, 76, 8, '#9fb0c8');
     for (let x = 6; x < 70; x += 5) R(x, 5, 3, 2, '#d8e0ea');
@@ -482,6 +532,7 @@ function table(def) {
     for (const [x, y, w, h] of [[40, 30, 30, 18], [10, 50, 24, 20], [60, 56, 16, 14]]) for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
       const d = ((i - w / 2) / (w / 2)) ** 2 + ((j - h / 2) / (h / 2)) ** 2; if (d < 1 && r() < .8) P(x + i, y + j, d > .7 ? '#b8a888' : '#d8ccb0');
     }
+    carve(g, 80, 76, METAL);   // 금속판
   }, gl, true);
 }
 const surfaces = {};

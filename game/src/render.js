@@ -92,7 +92,9 @@ export function renderWorld(ctx, art, m, player, view, spriteOf) {
 }
 
 // 확대 화면. 돌려주는 {k, ox, oy}로 눌린 글자를 찾는다.
-export function renderInspect(ctx, art, lang, s, view, sel, flash) {
+// cmp: 대조 모드 {on, pairs, key(고른 화자 기호 '줄:순서'), a(고른 첫 소리), verified}
+const PAIR_COLORS = ['#ffd36b', '#5fd0c0', '#f08a7a', '#a8b8ff', '#b6e07a', '#f0a8e0'];
+export function renderInspect(ctx, art, lang, s, view, sel, flash, cmp) {
   const {VW, VH, viewW, viewH, time} = view;
   ctx.fillStyle = '#16121b'; ctx.fillRect(0, 0, VW, VH);
   const k = Math.max(1, Math.floor(Math.min(viewW * .9 / s.w, viewH * .88 / s.h)));
@@ -109,6 +111,37 @@ export function renderInspect(ctx, art, lang, s, view, sel, flash) {
     ctx.fillRect(x, y, w, t); ctx.fillRect(x, y + h - t, w, t); ctx.fillRect(x, y, t, h); ctx.fillRect(x + w - t, y, t, h);
   }
   if (flash && time - flash.t < .25 && s.glyphs[flash.i]) { ctx.fillStyle = 'rgba(255,224,138,.35)'; ctx.fillRect(...box(s.glyphs[flash.i])); }
+  const frameBox = (q, col, t) => { const [x, y, w, h] = box(q); ctx.fillStyle = col; ctx.fillRect(x, y, w, t); ctx.fillRect(x, y + h - t, w, t); ctx.fillRect(x, y, t, h); ctx.fillRect(x + w - t, y, t, h); };
+  if (cmp && cmp.on) {
+    const t = Math.max(1, Math.round(k / 4)), machine = s.glyphs.filter(q => q.k === 'm');
+    let ci = 0;
+    for (const q of s.glyphs) {
+      if (q.k !== 's' || q.n === undefined) continue;
+      const key = q.line + ':' + q.n, r = cmp.pairs[key];
+      if (!r) continue;
+      const col = PAIR_COLORS[ci++ % PAIR_COLORS.length];
+      frameBox(q, col, t);
+      // 짝지은 소리들 아래에 같은 색 밑줄
+      const ms = machine.filter(m => m.line === q.line && m.i >= r[0] && m.i <= r[1]);
+      if (ms.length) {
+        const [x0, y0, , h0] = box(ms[0]), [x1, , w1] = box(ms[ms.length - 1]);
+        ctx.fillStyle = col; ctx.fillRect(x0, y0 + h0 + t, x1 + w1 - x0, t * 2);
+      }
+    }
+    if (cmp.key) {
+      const q = s.glyphs.find(g => g.k === 's' && g.n !== undefined && g.line + ':' + g.n === cmp.key);
+      if (q && Math.floor(time * 4) % 2) frameBox(q, '#ffffff', t);
+      const m = cmp.a !== null && machine.find(g => g.line === +cmp.key.split(':')[0] && g.i === cmp.a);
+      if (m) frameBox(m, '#ffffff', t);
+    }
+  }
+  // 대조를 마친 기록: 오른쪽 위에 도장(동그라미 안 체크)
+  if (cmp && cmp.verified) {
+    const r = 6 * k, cx = ox + s.w * k - r - 2 * k, cy = oy + r + 2 * k;
+    ctx.strokeStyle = 'rgba(168,67,46,.85)'; ctx.lineWidth = Math.max(2, k * .8);
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx - r * .45, cy); ctx.lineTo(cx - r * .1, cy + r * .4); ctx.lineTo(cx + r * .5, cy - r * .4); ctx.stroke();
+  }
   return {k, ox, oy};
 }
 

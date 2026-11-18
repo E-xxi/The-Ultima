@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "name": "THE Ultima 범용 기록문자 그래픽 규칙",
+    "version": "0.1.0",
+    "status": "provisional",
+    "note": "모든 글자 모양은 임시 그래픽이다. 규칙(획 체계·회전·표시 방식·블록 배치)만 확정 상태이며, 전체 음소 목록과 최종 그래픽은 미확정.",
+    "unit": "글자 1자 = 50x50 좌표계. 표시 요소는 상자 밖(-15~60)으로 나갈 수 있다.",
+    "decisions_doc": "claude/기록문자-디자인-결정.md"
+  },
+
+  "style": {
+    "consonantInk": "#2C2C2A",
+    "vowelInk": "#BA7517",
+    "strokeWidth": 2.8,
+    "vowelStrokeWidth": 3,
+    "ringRadius": 4,
+    "ringStrokeWidth": 2,
+    "connectorWidth": 2,
+    "lineCap": "round",
+    "lineJoin": "round"
+  },
+
+  "consonantBases": {
+    "labial": {
+      "label": "입술",
+      "reference": "이누크티투트 p 계열 (꺾쇠)",
+      "path": "M8 44L25 8L42 44",
+      "ports": [[8, 44], [42, 44], [25, 8]],
+      "marks": {
+        "nasal": { "cx": 46, "cy": 50 },
+        "fricative": "M39 23L47 41",
+        "approximant": "M42 44Q45 49 49 45"
+      },
+      "provisional": true
+    },
+    "alveolar": {
+      "label": "잇몸",
+      "reference": "이누크티투트 t 계열 (아치)",
+      "path": "M10 44V22Q10 8 25 8Q40 8 40 22V44",
+      "ports": [[10, 44], [40, 44], [25, 8]],
+      "marks": {
+        "nasal": { "cx": 40, "cy": 51 },
+        "fricative": "M47 28V44",
+        "approximant": "M40 44Q40 50 47 47"
+      },
+      "provisional": true
+    },
+    "palatal": {
+      "label": "경구개",
+      "reference": "이누크티투트 g 계열 (갈고리)",
+      "path": "M38 44V18Q38 8 28 8Q16 8 16 18",
+      "ports": [[38, 44], [16, 18], [28, 8]],
+      "marks": {
+        "nasal": { "cx": 16, "cy": 25 },
+        "fricative": "M9 10V22",
+        "approximant": "M16 18Q16 26 9 22"
+      },
+      "provisional": true
+    },
+    "velar": {
+      "label": "연구개",
+      "reference": "이누크티투트 k 계열 (고리 달린 기둥)",
+      "path": "M15 44V8Q40 8 40 20Q40 30 15 30",
+      "ports": [[15, 44], [15, 8], [40, 20]],
+      "marks": {
+        "nasal": { "cx": 8, "cy": 30 },
+        "fricative": "M18 37H34",
+        "approximant": "M15 30Q9 30 10 37"
+      },
+      "provisional": true
+    },
+    "uvular": {
+      "label": "구개수",
+      "reference": "이누크티투트 q 계열 — 연구개보다 안쪽이라 고리 하나 추가",
+      "path": "M15 44V8Q38 8 38 17Q38 26 15 26Q42 26 42 35Q42 44 15 44",
+      "ports": [[15, 44], [15, 8], [42, 35]],
+      "marks": {
+        "nasal": { "cx": 8, "cy": 44 },
+        "fricative": "M18 51H34",
+        "approximant": "M15 44Q9 44 10 50"
+      },
+      "provisional": true
+    }
+  },
+
+  "vowelBases": {
+    "a": {
+      "ring": [10, 10],
+      "path": "M14 12Q34 6 34 22V44M34 30Q14 26 14 37Q16 46 34 40",
+      "exit": [34, 44],
+      "provisional": true
+    },
+    "e": {
+      "ring": [6, 28],
+      "path": "M10 28H40Q40 12 27 12Q16 14 16 30Q18 44 40 42",
+      "exit": [40, 42],
+      "provisional": true
+    },
+    "i": {
+      "ring": [25, 8],
+      "path": "M25 16V40Q25 46 32 44",
+      "exit": [32, 44],
+      "provisional": true
+    },
+    "o": {
+      "ring": [10, 10],
+      "path": "M14 13C40 4 48 44 24 44C6 44 4 24 14 18",
+      "exit": [40, 32],
+      "provisional": true
+    },
+    "u": {
+      "ring": [12, 8],
+      "path": "M12 12V32Q12 44 25 44Q38 44 38 32V8M38 32V44",
+      "exit": [38, 44],
+      "provisional": true
+    },
+    "ʌ": {
+      "ring": [8, 44],
+      "path": "M11 41L25 6L42 44M16 30H34",
+      "exit": [42, 44],
+      "note": "입술 자음(꺾쇠)과 구분하기 위해 가로획 추가",
+      "provisional": true
+    }
+  },
+
+  "vowelDiacritics": {
+    "nasal": { "type": "dot", "cx": 24, "cy": -6, "cyWithLength": -13, "r": 3.5 },
+    "long": { "type": "path", "path": "M10 -4H38" }
+  },
+
+  "rules": {
+    "vowelVsConsonant": "모음은 반드시 고리에서 시작하고, 자음에는 고리가 없다.",
+    "placeToBase": {
+      "bilabial": "labial",
+      "labial-velar": "labial",
+      "alveolar": "alveolar",
+      "dental": "alveolar",
+      "alveolo-palatal": "palatal",
+      "palatal": "palatal",
+      "velar": "velar",
+      "uvular": "uvular"
+    },
+    "laryngealRotation": {
+      "appliesTo": ["stop", "affricate", "fricative"],
+      "plain": 0,
+      "voiced": 90,
+      "aspirated": 180,
+      "ejective": 270
+    },
+    "mannerMark": {
+      "stop": null,
+      "affricate": null,
+      "nasal": "nasal",
+      "fricative": "fricative",
+      "approximant": "approximant",
+      "lateral": "UNDECIDED",
+      "trill": "UNDECIDED",
+      "tap": "UNDECIDED"
+    },
+    "secondaryArticulation": {
+      "method": "해당 조음 위치 기본 획을 축소해 오른쪽 위에 부착 (회전하지 않음)",
+      "scale": 0.4,
+      "offset": [40, -8],
+      "map": { "labialized": "labial", "palatalized": "palatal" }
+    },
+    "blockLayout": {
+      "consonantStep": 56,
+      "vowelGap": 8,
+      "singleOnsetVowel": { "scale": 1.0, "dy": -6 },
+      "clusterVowel": { "scale": 0.85, "dy": 10 },
+      "coda": { "scale": 0.6, "gap": 6, "baselineAlign": true },
+      "growsWithConsonants": true,
+      "connectWithinSyllable": true,
+      "syllableGap": 26
+    }
+  }
+}
